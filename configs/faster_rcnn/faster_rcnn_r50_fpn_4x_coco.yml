@@ -1,0 +1,15 @@
+_BASE_: [
+  'faster_rcnn_r50_fpn_1x_coco.yml',
+]
+weights: output/faster_rcnn_r50_fpn_2x_coco/model_final
+
+epoch: 48
+LearningRate:
+  base_lr: 0.01
+  schedulers:
+  - !PiecewiseDecay
+    gamma: 0.1
+    milestones: [32, 44]
+  - !LinearWarmup
+    start_factor: 0.1
+    steps: 1000

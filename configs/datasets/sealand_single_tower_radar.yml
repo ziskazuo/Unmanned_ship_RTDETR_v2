@@ -1,0 +1,23 @@
+metric: RBOX
+num_classes: 13
+
+TrainDataset:
+  !COCODataSet
+    image_dir: Train/radar_bev
+    anno_path: train_coco.json
+    dataset_dir: /data1/zuokun/code/USV/Unmanned_ship_RTDETR/prepared/sealand_single_tower
+    data_fields: ['image', 'gt_bbox', 'gt_class', 'is_crowd', 'gt_poly']
+    allow_empty: true
+
+EvalDataset:
+  !COCODataSet
+    image_dir: Valid/radar_bev
+    anno_path: valid_coco.json
+    dataset_dir: /data1/zuokun/code/USV/Unmanned_ship_RTDETR/prepared/sealand_single_tower
+    data_fields: ['image', 'gt_bbox', 'gt_class', 'is_crowd', 'gt_poly']
+    allow_empty: true
+
+TestDataset:
+  !ImageFolder
+    anno_path: label_list.txt
+    dataset_dir: /data1/zuokun/code/USV/Unmanned_ship_RTDETR/prepared/sealand_single_tower

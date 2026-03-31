@@ -1,0 +1,14 @@
+_BASE_: [
+  '../datasets/sealand_single_tower_radarcamera_4km_super4.yml',
+  '../runtime_radar.yml',
+  '_base_/optimizer_6x.yml',
+  '_base_/radardetr_r50vd.yml',
+  '_base_/sealand_radardetr_reader_1000_super4.yml',
+]
+
+save_dir: output/sealand_radardetr_r50vd_6x_4km_super4
+weights: output/sealand_radardetr_r50vd_6x_4km_super4/model_final
+find_unused_parameters: True
+log_iter: 20
+snapshot_epoch: 1
+eval_size: [1000, 1000]

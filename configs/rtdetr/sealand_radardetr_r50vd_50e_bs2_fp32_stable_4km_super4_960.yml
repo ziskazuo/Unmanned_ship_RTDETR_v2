@@ -1,0 +1,21 @@
+_BASE_: [
+  'sealand_radardetr_r50vd_6x_4km_super4_960.yml',
+]
+
+epoch: 50
+save_dir: output/sealand_radardetr_r50vd_50e_bs2_fp32_stable_4km_super4_960
+weights: output/sealand_radardetr_r50vd_50e_bs2_fp32_stable_4km_super4_960/model_final
+
+TrainReader:
+  batch_size: 2
+
+LearningRate:
+  base_lr: 0.0001
+  schedulers:
+    - !PiecewiseDecay
+      gamma: 0.1
+      milestones: [30, 40]
+      use_warmup: true
+    - !LinearWarmup
+      start_factor: 0.001
+      steps: 3000

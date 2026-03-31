@@ -1,0 +1,12 @@
+_BASE_: [
+  'sealand_radardetr_r50vd_50e_bs2_4km_super4.yml',
+]
+
+save_dir: output/sealand_radardetr_r50vd_50e_bs4_4km_super4
+weights: output/sealand_radardetr_r50vd_50e_bs4_4km_super4/model_final
+
+TrainReader:
+  batch_size: 4
+
+LearningRate:
+  base_lr: 0.0004

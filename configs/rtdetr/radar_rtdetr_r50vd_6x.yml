@@ -1,0 +1,11 @@
+_BASE_: [
+  '../datasets/coco_detection_shipradar.yml',# 数据集配置
+  '../runtime_radar.yml',# 运行时配置
+  '_base_/optimizer_6x.yml',# 优化器配置
+  '_base_/radardetr_r50vd.yml',# ⭐ 主要模型架构
+  '_base_/radardetr_reader.yml',# 数据读取器配置
+]
+
+weights: output/output2/
+find_unused_parameters: True
+log_iter: 20

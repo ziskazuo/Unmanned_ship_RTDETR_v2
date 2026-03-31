@@ -1,0 +1,11 @@
+_BASE_: [
+  '../datasets/coco_detection.yml',
+  '../runtime2.yml',
+  '_base_/optimizer_6x.yml',
+  '_base_/rtdetr_vit_cae.yml',
+  '_base_/rtdetr_reader.yml',
+]
+
+weights: output/rtdetr_vit_cae_6x_coco/model_final
+find_unused_parameters: True
+log_iter: 200

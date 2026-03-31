@@ -1,0 +1,22 @@
+metric: COCO
+num_classes: 11
+
+TrainDataset:
+  name: COCODataSet
+  image_dir: train2017
+  anno_path: annotations/instances_train2017.json
+  dataset_dir: /home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/dataset/ABOShipscoco/
+  data_fields: ['image', 'gt_bbox', 'gt_class', 'is_crowd']
+  #data_fields: ['image_id', 'bbox', 'categories', 'iscrowd']
+
+EvalDataset:
+  name: COCODataSet
+  image_dir: val2017
+  anno_path: annotations/instances_val2017.json
+  dataset_dir: /home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/dataset/ABOShipscoco/
+  allow_empty: true
+
+TestDataset:
+  name: ImageFolder
+  anno_path: annotations/label_list.txt # also support txt (like VOC's label_list.txt)
+  dataset_dir: /home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/dataset/ABOShipscoco/ # if set, anno_path will be 'dataset_dir/anno_path'

@@ -1,0 +1,24 @@
+metric: RBOX
+num_classes: 4
+
+TrainDataset:
+  name: CameraRadar_COCODataSet
+  radar_image_dir: train/lidar
+  camera_image_dir : train/cam
+  anno_path: train_coco_annotations_medclass.json
+  dataset_dir: /data1/ZK/Dataset/USV_DATASET_v2/dataset
+  data_fields: ['image', 'gt_bbox', 'gt_class', 'is_crowd', 'gt_poly']
+  allow_empty: true
+EvalDataset:
+  name: CameraRadar_COCODataSet
+  radar_image_dir: val/lidar
+  camera_image_dir : val/cam
+  anno_path: val_coco_annotations_medclass.json
+  dataset_dir: /data1/ZK/Dataset/USV_DATASET_v2/dataset
+  data_fields: ['image', 'gt_bbox', 'gt_class', 'is_crowd', 'gt_poly']
+  allow_empty: true
+
+TestDataset:
+  name: RadarCamera_ImageFolder
+  anno_path: medclass_label_list.txt # also support txt (like VOC's label_list.txt)
+  dataset_dir: /data1/ZK/Dataset/USV_DATASET_v2/dataset # if set, anno_path will be 'dataset_dir/anno_path''''

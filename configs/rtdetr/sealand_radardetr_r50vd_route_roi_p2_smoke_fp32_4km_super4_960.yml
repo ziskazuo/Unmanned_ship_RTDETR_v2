@@ -1,0 +1,45 @@
+_BASE_: [
+  '../datasets/sealand_single_tower_radarcamera_4km_super4_960_route_roi_smoke.yml',
+  '../runtime_radar.yml',
+  '_base_/sealand_radardetr_reader_960_super4.yml',
+  '_base_/radardetr_r50vd_route_roi_p2.yml',
+]
+
+epoch: 1
+metric: RBOX_COCO_STYLE
+iou_thresholds: [0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90]
+enable_ship_only_eval: True
+record_eval_history: True
+eval_history_file: eval_history.jsonl
+stop_on_nonfinite_loss: True
+save_dir: output/sealand_radardetr_r50vd_route_roi_p2_smoke_fp32_4km_super4_960
+weights: output/sealand_radardetr_r50vd_route_roi_p2_smoke_fp32_4km_super4_960/best_model
+find_unused_parameters: False
+convert_sync_bn: False
+log_iter: 1
+snapshot_epoch: 1
+worker_num: 0
+use_ema: False
+
+TrainReader:
+  batch_size: 1
+
+EvalReader:
+  batch_size: 1
+
+LearningRate:
+  base_lr: 0.0001
+  schedulers:
+    - !CosineDecay
+      max_epochs: 1
+      use_warmup: true
+    - !LinearWarmup
+      start_factor: 0.001
+      steps: 10
+
+OptimizerBuilder:
+  clip_grad_by_norm: 0.1
+  regularizer: false
+  optimizer:
+    type: AdamW
+    weight_decay: 0.0001

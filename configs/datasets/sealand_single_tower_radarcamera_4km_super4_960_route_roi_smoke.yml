@@ -1,0 +1,29 @@
+metric: RBOX
+num_classes: 4
+
+TrainDataset:
+  !CameraRadar_COCODataSet
+    dataset_dir: /tmp/sealand_route_roi_smoke_full
+    radar_image_dir: ''
+    camera_image_dir: ''
+    anno_path: train_coco.json
+    data_fields: ['image', 'gt_bbox', 'gt_class', 'is_crowd', 'gt_poly', 'gt_primary_camera', 'gt_visible_cameras', 'gt_camera_box_2d', 'gt_has_camera_box']
+    allow_empty: true
+
+EvalDataset:
+  !CameraRadar_COCODataSet
+    dataset_dir: /tmp/sealand_route_roi_smoke_full
+    radar_image_dir: ''
+    camera_image_dir: ''
+    anno_path: test_onlineval_random400_seed20260327.json
+    data_fields: ['image', 'gt_bbox', 'gt_class', 'is_crowd', 'gt_poly', 'gt_primary_camera', 'gt_visible_cameras', 'gt_camera_box_2d', 'gt_has_camera_box']
+    allow_empty: true
+
+TestDataset:
+  !CameraRadar_COCODataSet
+    dataset_dir: /tmp/sealand_route_roi_smoke_full
+    radar_image_dir: ''
+    camera_image_dir: ''
+    anno_path: test_coco.json
+    data_fields: ['image']
+    allow_empty: true

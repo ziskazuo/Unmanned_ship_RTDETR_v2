@@ -1,0 +1,25 @@
+_BASE_: [
+  '../datasets/sealand_single_tower_radarcamera_4km_super4_960_smoke.yml',
+  '../runtime_radar.yml',
+  '_base_/optimizer_6x.yml',
+  '_base_/radardetr_r50vd.yml',
+  '_base_/sealand_radardetr_reader_960_super4.yml',
+]
+
+epoch: 1
+save_dir: output/sealand_radardetr_r50vd_smoke_bs2_4km_super4_960
+weights: output/sealand_radardetr_r50vd_smoke_bs2_4km_super4_960/model_final
+find_unused_parameters: True
+log_iter: 1
+snapshot_epoch: 1
+eval_size: [960, 960]
+worker_num: 2
+
+TrainReader:
+  batch_size: 2
+
+EvalReader:
+  batch_size: 1
+
+LearningRate:
+  base_lr: 0.0002

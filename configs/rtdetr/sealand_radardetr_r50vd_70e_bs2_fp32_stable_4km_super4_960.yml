@@ -1,0 +1,7 @@
+_BASE_: [
+  'sealand_radardetr_r50vd_50e_bs2_fp32_stable_4km_super4_960.yml',
+]
+
+epoch: 70
+save_dir: output/sealand_radardetr_r50vd_70e_bs2_fp32_stable_4km_super4_960
+weights: output/sealand_radardetr_r50vd_70e_bs2_fp32_stable_4km_super4_960/model_final

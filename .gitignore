@@ -1,0 +1,40 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+
+# Local runtime / temp
+.codex
+.sixth/
+tmp_ppi_preview/
+backup/
+
+# Training artifacts
+log/
+log_resume012/
+output/
+attn_visualization2/
+
+# Prepared / datasets
+prepared/
+*.jsonl
+
+# Model weights / checkpoints
+*.pdparams
+*.pdopt
+*.pdema
+*.pth
+*.pt
+*.onnx
+*.ckpt
+
+# Large or generated analysis files
+model_structure.txt
+pretrain_weights_structure.txt

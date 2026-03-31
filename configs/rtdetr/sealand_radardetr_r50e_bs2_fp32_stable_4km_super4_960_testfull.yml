@@ -1,0 +1,12 @@
+_BASE_: [
+  'sealand_radardetr_r50vd_50e_bs2_fp32_stable_4km_super4_960.yml',
+]
+
+EvalDataset:
+  !CameraRadar_COCODataSet
+    dataset_dir: /data1/zuokun/code/USV/Unmanned_ship_RTDETR/prepared/sealand_single_tower_4km_super4_960
+    radar_image_dir: ''
+    camera_image_dir: ''
+    anno_path: test_coco.json
+    data_fields: ['image', 'gt_bbox', 'gt_class', 'is_crowd', 'gt_poly']
+    allow_empty: true

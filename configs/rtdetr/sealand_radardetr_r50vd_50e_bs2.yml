@@ -1,0 +1,8 @@
+_BASE_: [
+  'sealand_radardetr_r50vd_6x_bs2.yml',
+]
+
+epoch: 50
+
+save_dir: output/sealand_radardetr_r50vd_50e_bs2
+weights: output/sealand_radardetr_r50vd_50e_bs2/model_final

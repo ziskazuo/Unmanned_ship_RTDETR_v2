@@ -1,0 +1,22 @@
+metric: COCO
+num_classes: 6
+
+TrainDataset:
+  name: COCODataSet
+  image_dir: train_ir_img_new
+  anno_path: annotations_new/m3fd_train_new.json
+  dataset_dir: /home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/dataset/coco_m3fd_visir
+  data_fields: ['image', 'gt_bbox', 'gt_class', 'is_crowd']
+  #data_fields: ['image_id', 'bbox', 'categories', 'iscrowd']
+
+EvalDataset:
+  name: COCODataSet
+  image_dir: val_ir_img_new
+  anno_path: annotations_new/m3fd_val_new.json
+  dataset_dir: /home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/dataset/coco_m3fd_visir
+  allow_empty: true
+
+TestDataset:
+  name: ImageFolder
+  anno_path: annotations_new/label_list.txt # also support txt (like VOC's label_list.txt)
+  dataset_dir: /home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/dataset/coco_m3fd_visir # if set, anno_path will be 'dataset_dir/anno_path'

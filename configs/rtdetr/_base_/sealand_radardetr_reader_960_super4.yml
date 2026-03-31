@@ -1,0 +1,63 @@
+worker_num: 4
+
+TrainReader:
+  sample_transforms:
+    - RadarCamera_Decode: {}
+    - Poly2Array: {}
+    - RadarCamera_RResize: {target_size: [960, 960], keep_ratio: False, interp: 2}
+    - Poly2RBox: {filter_threshold: 0, filter_mode: null, rbox_type: 'oc'}
+  batch_transforms:
+    - RadarCamera_NormalizeImageSeparate:
+        radar_mean: [0., 0., 0.]
+        radar_std: [1., 1., 1.]
+        radar_is_scale: True
+        radar_norm_type: none
+        camera_mean: [0.485, 0.456, 0.406]
+        camera_std: [0.229, 0.224, 0.225]
+        camera_is_scale: True
+        camera_norm_type: mean_std
+    - RadarCamera_Permute: {}
+  batch_size: 1
+  shuffle: true
+  drop_last: true
+  collate_batch: false
+  use_shared_memory: false
+
+EvalReader:
+  sample_transforms:
+    - RadarCamera_Decode: {}
+    - Poly2Array: {}
+    - RadarCamera_RResize: {target_size: [960, 960], keep_ratio: False, interp: 2}
+    - RadarCamera_NormalizeImageSeparate:
+        radar_mean: [0., 0., 0.]
+        radar_std: [1., 1., 1.]
+        radar_is_scale: True
+        radar_norm_type: none
+        camera_mean: [0.485, 0.456, 0.406]
+        camera_std: [0.229, 0.224, 0.225]
+        camera_is_scale: True
+        camera_norm_type: mean_std
+    - RadarCamera_Permute: {}
+  batch_size: 1
+  shuffle: false
+  drop_last: false
+
+TestReader:
+  inputs_def:
+    image_shape: [3, 960, 960]
+  sample_transforms:
+    - RadarCamera_Decode: {}
+    - RadarCamera_RResize: {target_size: [960, 960], keep_ratio: False, interp: 2}
+    - RadarCamera_NormalizeImageSeparate:
+        radar_mean: [0., 0., 0.]
+        radar_std: [1., 1., 1.]
+        radar_is_scale: True
+        radar_norm_type: none
+        camera_mean: [0.485, 0.456, 0.406]
+        camera_std: [0.229, 0.224, 0.225]
+        camera_is_scale: True
+        camera_norm_type: mean_std
+    - RadarCamera_Permute: {}
+  batch_size: 1
+  shuffle: false
+  drop_last: false

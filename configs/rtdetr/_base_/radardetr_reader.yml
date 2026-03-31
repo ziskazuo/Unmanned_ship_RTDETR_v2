@@ -1,0 +1,90 @@
+# worker_num: 4
+# TrainReader:
+#   sample_transforms:
+#     - RadarCamera_Decode: {}
+    
+# #    - RandomDistort: {prob: 0.8}
+# #    - RandomExpand: {fill_value: [123.675, 116.28, 103.53]}
+# #    - RandomCrop: {prob: 0.8}
+# #    - RandomFlip: {}
+#   batch_transforms:
+#     - RadarCamera_BatchRandomResize: {target_size: [1024], random_size: True, random_interp: True, keep_ratio: False}
+#     - RadarCamera_NormalizeImage: {mean: [0., 0., 0.], std: [1., 1., 1.], norm_type: none}
+#     - RadarCamera_NormalizeBox: {}
+#     - BboxXYXY2XYWH: {}
+#     - RadarCamera_Permute: {}
+#   batch_size: 1
+#   shuffle: true
+#   drop_last: true
+#   collate_batch: false
+#   use_shared_memory: false
+
+
+# EvalReader:
+#   sample_transforms:
+#     - RadarCamera_Decode: {}
+#     - RadarCamera_Resize: {target_size: [1024, 1024], keep_ratio: False, interp: 2}
+#     - RadarCamera_NormalizeImage: {mean: [0., 0., 0.], std: [1., 1., 1.], norm_type: none}
+#     - RadarCamera_Permute: {}
+#   batch_size: 1
+#   shuffle: false
+#   drop_last: false
+
+
+# TestReader:
+#   inputs_def:
+#     image_shape: [3, 1024, 1024]
+#   sample_transforms:
+#     - RadarCamera_Decode: {}
+#     - RadarCamera_Resize: {target_size: [1024, 1024], keep_ratio: False, interp: 2}
+#     - RadarCamera_NormalizeImage: {mean: [0., 0., 0.], std: [1., 1., 1.], norm_type: none}
+#     - RadarCamera_Permute: {}
+#   batch_size: 8
+#   shuffle: false
+#   drop_last: false
+worker_num: 4
+TrainReader:
+  sample_transforms:
+    - RadarCamera_Decode: {}
+    - Poly2Array: {}
+    - RadarCamera_RResize: {target_size: [1024, 1024], keep_ratio: False, interp: 2}
+    - Poly2RBox: {filter_threshold: 2, filter_mode: 'edge', rbox_type: 'oc'}
+#    - RandomDistort: {prob: 0.8}
+#    - RandomExpand: {fill_value: [123.675, 116.28, 103.53]}
+#    - RandomCrop: {prob: 0.8}
+#    - RandomFlip: {}
+  batch_transforms:
+    - RadarCamera_NormalizeImage: {mean: [0.485, 0.456, 0.406], std: [0.229, 0.224, 0.225], norm_type: none}
+    #- RadarCamera_NormalizeBox_Rotate: {}
+    #- BboxXYXY2XYWH: {}
+    - RadarCamera_Permute: {}
+  batch_size: 1
+  shuffle: true
+  drop_last: true
+  collate_batch: false
+  use_shared_memory: false
+
+
+EvalReader:
+  sample_transforms:
+    - RadarCamera_Decode: {}
+    - Poly2Array: {}
+    - RadarCamera_RResize: {target_size: [1024, 1024], keep_ratio: False, interp: 2}
+    - RadarCamera_NormalizeImage: {mean: [0.485, 0.456, 0.406], std: [0.229, 0.224, 0.225], norm_type: none}
+    - RadarCamera_Permute: {}
+  batch_size: 1
+  shuffle: false
+  drop_last: false
+
+
+TestReader:
+  inputs_def:
+    image_shape: [3, 1024, 1024]
+  sample_transforms:
+    - RadarCamera_Decode: {}
+    - RadarCamera_Resize: {target_size: [1024, 1024], keep_ratio: False, interp: 2}
+    - RadarCamera_NormalizeImage: {mean: [0., 0., 0.], std: [1., 1., 1.], norm_type: none}
+    - RadarCamera_Permute: {}
+  batch_size: 8
+  shuffle: false
+  drop_last: false

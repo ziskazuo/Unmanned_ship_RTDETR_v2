@@ -1,0 +1,113 @@
+architecture: RadarCamera_RouteROI_DETR
+pretrain_weights: https://paddledet.bj.bcebos.com/models/pretrained/ResNet50_vd_ssld_v2_pretrained.pdparams
+norm_type: bn
+use_ema: True
+ema_decay: 0.9999
+ema_decay_type: "exponential"
+ema_filter_no_grad: True
+hidden_dim: 256
+use_focal_loss: True
+eval_size: [960, 960]
+
+
+RadarCamera_RouteROI_DETR:
+  backbone_radar: ResNetRadarP2
+  backbone_camera: ResNet
+  neck_radar: RadarHybridEncoderP2
+  neck_camera: HybridEncoder
+  transformer: RTDETRTransformer_Rotate_RouteROI
+  detr_head: DINOHead_Rotate_RouteROI
+  post_process: DETRPostProcess_Rotate
+
+ResNetRadarP2:
+  depth: 50
+  variant: d
+  norm_type: bn
+  freeze_at: 0
+  return_idx: [0, 1, 2, 3]
+  lr_mult_list: [0.1, 0.1, 0.1, 0.1]
+  num_stages: 4
+  freeze_stem_only: True
+
+ResNet:
+  depth: 50
+  variant: d
+  norm_type: bn
+  freeze_at: 0
+  return_idx: [1, 2, 3]
+  lr_mult_list: [0.1, 0.1, 0.1, 0.1]
+  num_stages: 4
+  freeze_stem_only: True
+
+HybridEncoder:
+  hidden_dim: 256
+  use_encoder_idx: [2]
+  num_encoder_layers: 1
+  encoder_layer:
+    name: TransformerLayer
+    d_model: 256
+    nhead: 8
+    dim_feedforward: 1024
+    dropout: 0.
+    activation: 'gelu'
+  expansion: 1.0
+
+RadarHybridEncoderP2:
+  hidden_dim: 256
+  use_encoder_idx: [3]
+  num_encoder_layers: 1
+  encoder_layer:
+    name: TransformerLayer
+    d_model: 256
+    nhead: 8
+    dim_feedforward: 1024
+    dropout: 0.
+    activation: 'gelu'
+  expansion: 1.0
+
+RTDETRTransformer_Rotate_RouteROI:
+  num_queries: 300
+  position_embed_type: sine
+  feat_strides: [4, 8, 16]
+  num_levels: 3
+  nhead: 8
+  num_decoder_layers: 6
+  dim_feedforward: 1024
+  dropout: 0.
+  activation: relu
+  num_denoising: 100
+  label_noise_ratio: 0.5
+  box_noise_scale: 1.0
+  angle_noise_scale: 0.03
+  learnt_init_query: False
+  proposal_topk_per_level: [180, 90, 30]
+  proposal_level_score_bias: [0.25, 0.10, 0.0]
+  proposal_small_box_threshold: 0.025
+  proposal_small_box_bonus_weight: 0.12
+  proposal_use_learned_rerank: True
+  proposal_rank_score_weight: 1.0
+
+DINOHead_Rotate_RouteROI:
+  num_classes: 4
+  route_invalid_logit_bias: 2.0
+  visible_logit_weight: 1.0
+  loss:
+    name: DINOLoss_Rotate_RouteROI
+    loss_coeff:
+      class: 1
+      bbox: 5
+      giou: 2
+      route_primary: 1
+      visible: 1
+      cam_class: 1
+      proj_l1: 2
+      proj_iou: 2
+    aux_loss: True
+    use_vfl: True
+    angle_ignore_short_side: 2.0
+    matcher:
+      name: HungarianMatcher_Rotate
+      matcher_coeff: {class: 2, bbox: 5, giou: 2}
+
+DETRPostProcess_Rotate:
+  num_top_queries: 100
