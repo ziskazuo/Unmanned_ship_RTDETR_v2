@@ -38,6 +38,7 @@ os.environ.setdefault("FLAGS_use_gpu", "false")
 
 from ppdet.data.source.category import get_categories
 from ppdet.metrics.map_utils import DetectionMAP
+from ppdet.utils.rbox_min_size import clamp_segmentation_min_edge
 
 
 def parse_args() -> argparse.Namespace:
@@ -52,6 +53,11 @@ def parse_args() -> argparse.Namespace:
         "--classwise",
         action="store_true",
         help="Include per-class AP in the underlying metric accumulators")
+    parser.add_argument(
+        "--min-gt-rbox-edge",
+        type=float,
+        default=2.0,
+        help="Clamp GT rotated box min edge length in pixels (<=0 disables).")
     return parser.parse_args()
 
 
@@ -67,6 +73,7 @@ def _flatten_poly(segmentation) -> List[float]:
 
 def load_gt(
     anno_file: str,
+    min_gt_rbox_edge: float,
 ) -> Tuple[Dict[int, List[Tuple[List[float], int]]], Dict[int, int], Dict[int, str]]:
     with open(anno_file, "r", encoding="utf-8") as f:
         data = json.load(f)
@@ -78,7 +85,10 @@ def load_gt(
     for ann in data.get("annotations", []):
         if ann.get("iscrowd", 0):
             continue
-        poly = _flatten_poly(ann.get("segmentation"))
+        seg = ann.get("segmentation")
+        if min_gt_rbox_edge > 0:
+            seg = clamp_segmentation_min_edge(seg, min_edge=min_gt_rbox_edge)
+        poly = _flatten_poly(seg)
         if len(poly) != 8:
             continue
         catid = int(ann["category_id"])
@@ -147,7 +157,8 @@ def evaluate_threshold(
 
 def main():
     args = parse_args()
-    gt_by_image, catid2clsid, catid2name = load_gt(args.anno_file)
+    gt_by_image, catid2clsid, catid2name = load_gt(
+        args.anno_file, min_gt_rbox_edge=args.min_gt_rbox_edge)
     pred_by_image = load_pred(args.pred_json, catid2clsid)
 
     thresholds = [round(0.50 + i * 0.05, 2) for i in range(10)]
@@ -161,6 +172,7 @@ def main():
         "pred_json": str(Path(args.pred_json).resolve()),
         "anno_file": str(Path(args.anno_file).resolve()),
         "metric_type": "rotated_bbox_integral",
+        "min_gt_rbox_edge": args.min_gt_rbox_edge,
         "AP50": ap_by_thresh["0.50"],
         "AP75": ap_by_thresh["0.75"],
         "mAP50_95": float(sum(ap_by_thresh.values()) / len(ap_by_thresh)),

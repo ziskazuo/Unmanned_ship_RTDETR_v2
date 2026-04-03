@@ -32,6 +32,7 @@ def build_env(gpu: str):
     current = env.get('LD_LIBRARY_PATH', '')
     env['LD_LIBRARY_PATH'] = f"{DEFAULT_NCCL}:/usr/local/cuda/lib64:{current}"
     env['CUDA_VISIBLE_DEVICES'] = gpu
+    env['FLAGS_allocator_strategy'] = 'auto_growth'
     return env
 
 

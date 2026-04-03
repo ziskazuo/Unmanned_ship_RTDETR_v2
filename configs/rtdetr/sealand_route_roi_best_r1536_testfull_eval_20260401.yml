@@ -1,0 +1,14 @@
+_BASE_: [
+  'sealand_radardetr_r50vd_route_roi_p2_16e_bs2x4_fp32_test400_onlineval_4km_super4_r1536_c1024x512.yml',
+]
+
+weights: /data1/zuokun/code/USV/Unmanned_ship_RTDETR/output/sealand_radardetr_r50vd_route_roi_p2_16e_bs2x4_fp32_test400_onlineval_4km_super4_r1536_c1024x512/sealand_radardetr_r50vd_route_roi_p2_16e_bs2x4_fp32_test400_onlineval_4km_super4_r1536_c1024x512/best_model
+
+EvalDataset:
+  !CameraRadar_COCODataSet
+    dataset_dir: /data1/zuokun/code/USV/Unmanned_ship_RTDETR/prepared/sealand_single_tower_4km_super4_1536_route_roi
+    radar_image_dir: ''
+    camera_image_dir: ''
+    anno_path: test_coco.json
+    data_fields: ['image', 'gt_bbox', 'gt_class', 'is_crowd', 'gt_poly', 'gt_primary_camera', 'gt_visible_cameras', 'gt_camera_box_2d', 'gt_has_camera_box']
+    allow_empty: true

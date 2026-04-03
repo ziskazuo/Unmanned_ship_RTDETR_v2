@@ -1,5 +1,5 @@
 _BASE_: [
-  '../datasets/sealand_single_tower_radarcamera.yml',
+  '../datasets/sealand_single_tower_radarcamera_4km_super4_960.yml',
   '../runtime_radar.yml',
   '_base_/optimizer_6x.yml',
   '_base_/radardetr_r50vd.yml',

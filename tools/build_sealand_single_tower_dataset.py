@@ -49,7 +49,7 @@ FRAME_COUNT = 800
 SUPER_CATEGORY_ORDER = ["CargoShip", "CruiseShip", "FishingVessel", "RecreationalBoat"]
 SUPER_CATEGORY_MAP = {
     "Containership": "CargoShip",
-    "libertyship": "CargoShip",
+    "libertyship": "FishingVessel",
     "smallcargo": "CargoShip",
     "suppliervessel": "CargoShip",
     "queenmarry": "CruiseShip",
@@ -57,9 +57,9 @@ SUPER_CATEGORY_MAP = {
     "fishingboat": "FishingVessel",
     "Yacht": "RecreationalBoat",
     "Sailboat": "RecreationalBoat",
-    "HouseBoat": "RecreationalBoat",
+    "HouseBoat": "CruiseShip",
     "Motorboat": "RecreationalBoat",
-    "Boataaa": "RecreationalBoat",
+    "Boataaa": "FishingVessel",
     "CoastGuard": "RecreationalBoat",
 }
 

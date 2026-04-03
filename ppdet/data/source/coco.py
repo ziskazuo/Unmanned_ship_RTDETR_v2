@@ -21,6 +21,7 @@ except Exception:
 import numpy as np
 from ppdet.core.workspace import register, serializable
 from .dataset import DetDataset,Multi_DetDataset, RadarCamera_DetDataset
+from ppdet.utils.rbox_min_size import clamp_segmentation_min_edge, segmentation_to_poly8, poly8_to_xyxy
 
 from ppdet.utils.logger import setup_logger
 logger = setup_logger(__name__)
@@ -365,6 +366,7 @@ class CameraRadar_COCODataSet(RadarCamera_DetDataset):
                  load_crowd=False,
                  allow_empty=False,
                  empty_ratio=1.,
+                 min_gt_rbox_edge=2.0,
                  repeat=1):
         super(CameraRadar_COCODataSet, self).__init__(
             dataset_dir,
@@ -379,6 +381,7 @@ class CameraRadar_COCODataSet(RadarCamera_DetDataset):
         self.load_crowd = load_crowd
         self.allow_empty = allow_empty
         self.empty_ratio = empty_ratio
+        self.min_gt_rbox_edge = float(min_gt_rbox_edge)
 
     def _sample_empty(self, records, num):
         # if empty_ratio is out of [0. ,1.), do not sample the records
@@ -565,7 +568,18 @@ class CameraRadar_COCODataSet(RadarCamera_DetDataset):
                             np.delete(gt_class, i)
                             np.delete(gt_bbox, i)
                         else:
-                            gt_poly[i] = box['segmentation']
+                            seg = box['segmentation']
+                            if self.min_gt_rbox_edge > 0:
+                                seg = clamp_segmentation_min_edge(
+                                    seg, min_edge=self.min_gt_rbox_edge)
+                            gt_poly[i] = seg
+                            # Keep HBB aligned with clamped rotated GT.
+                            clamped_poly = segmentation_to_poly8(seg)
+                            if clamped_poly is not None:
+                                xyxy = poly8_to_xyxy(clamped_poly)
+                                if xyxy is not None:
+                                    gt_bbox[i, :] = np.array(
+                                        xyxy, dtype=np.float32)
                         has_segmentation = True
 
                     if 'track_id' in box:

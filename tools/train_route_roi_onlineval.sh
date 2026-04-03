@@ -3,7 +3,6 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 PYTHON_BIN="/data1/zuokun/vene/Unmanned_ship_RTDETR/bin/python"
-NCCL_LIB_DIR="/data1/zuokun/vene/nccl/2.20.3-cuda11.0/nccl_2.20.3-1+cuda11.0_x86_64/lib"
 DEFAULT_CONFIG="configs/rtdetr/sealand_radardetr_r50vd_route_roi_p2_16e_bs2x4_fp32_test400_onlineval_4km_super4_960.yml"
 DEFAULT_GPUS="0,1,2,3,4,5,6,7"
 
@@ -35,8 +34,16 @@ done
 
 cd "$ROOT_DIR"
 
-export LD_LIBRARY_PATH="${NCCL_LIB_DIR}:/usr/local/cuda/lib64:${LD_LIBRARY_PATH:-}"
-export FLAGS_allocator_strategy="auto_growth"
+source "${ROOT_DIR}/tools/paddle_runtime_env.sh"
+setup_paddle_runtime_env
+MIN_CUDNN="${MIN_CUDNN:-8400}"
+show_runtime_cudnn_version "${PYTHON_BIN}"
+RUNTIME_CUDNN="$(get_runtime_cudnn_version "${PYTHON_BIN}")"
+if [[ "${RUNTIME_CUDNN}" -lt "${MIN_CUDNN}" ]]; then
+  echo "ERROR: runtime cuDNN=${RUNTIME_CUDNN}, expected >= ${MIN_CUDNN}" >&2
+  echo "Please fix LD_LIBRARY_PATH before launching training." >&2
+  exit 2
+fi
 
 IFS=',' read -r -a GPU_ARR <<< "$GPUS"
 GPU_COUNT="${#GPU_ARR[@]}"
