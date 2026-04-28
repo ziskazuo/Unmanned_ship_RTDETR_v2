@@ -1,0 +1,10 @@
+_BASE_: [
+  './sealand_radardetr_r50vd_route_roi_p2_2km_super4_r1536_c1024x512_hbb_min8_mix721_hardcenter.yml',
+]
+
+save_dir: output/sealand_radardetr_r50vd_route_roi_p2_2km_super4_r1536_c1024x512_hbb_min8_mix721_hardcenter_3dcuboid
+
+DINOHead_Rotate_RouteROI:
+  use_3d_height_cuboid_projection: True
+  height_prior_stat: p75
+  roi_expand_ratio: 1.15

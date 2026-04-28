@@ -417,13 +417,13 @@ def main():
     parser.add_argument(
         "--yaml_dir", 
         type=str, 
-        default="/data1/jinhang/Projects/Unmanned_ship_RTDETR/dataset_one_medclass/train/annotations",
+        default="/data1/zuokun/code/USV/Unmanned_ship_RTDETR_v2/dataset_one_medclass/train/annotations",
         help="Directory containing YAML files"
     )
     parser.add_argument(
         "--output", 
         type=str, 
-        default="/data1/jinhang/Projects/Unmanned_ship_RTDETR/dataset_one_medclass/train_coco_annotations.json",
+        default="/data1/zuokun/code/USV/Unmanned_ship_RTDETR_v2/dataset_one_medclass/train_coco_annotations.json",
         help="Output COCO JSON file path"
     )
     parser.add_argument(

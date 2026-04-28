@@ -3,7 +3,7 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 PYTHON_BIN="/data1/zuokun/vene/Unmanned_ship_RTDETR/bin/python"
-DEFAULT_CONFIG="configs/rtdetr/sealand_radardetr_r50vd_route_roi_p2_16e_bs2x4_fp32_test400_onlineval_4km_super4_960.yml"
+DEFAULT_CONFIG="configs/rtdetr/sealand_radardetr_r50vd_route_roi_p2_2km_super4_r1536_c1024x512_hbb_min8_mix721.yml"
 DEFAULT_GPUS="0,1,2,3,4,5,6,7"
 
 CONFIG="$DEFAULT_CONFIG"

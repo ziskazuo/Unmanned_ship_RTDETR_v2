@@ -31,8 +31,8 @@ import random
 
 class DatasetSplitter:
     def __init__(self, 
-                 base_dir="/data1/jinhang/Projects/Unmanned_ship_RTDETR/dataset/2025-10-18_22-26-46",
-                 output_dir="/data1/jinhang/Projects/Unmanned_ship_RTDETR/dataset/",
+                 base_dir="/data1/zuokun/code/USV/Unmanned_ship_RTDETR_v2/dataset/2025-10-18_22-26-46",
+                 output_dir="/data1/zuokun/code/USV/Unmanned_ship_RTDETR_v2/dataset/",
                  train_ratio=0.8,
                  random_seed=42,
                  use_existing_indices=False):
@@ -339,13 +339,13 @@ def main():
     parser.add_argument(
         "--base_dir",
         type=str,
-        default="/data1/jinhang/Projects/Unmanned_ship_RTDETR/dataset/2025-10-18_22-26-46",
+        default="/data1/zuokun/code/USV/Unmanned_ship_RTDETR_v2/dataset/2025-10-18_22-26-46",
         help="Base directory containing the original dataset"
     )
     parser.add_argument(
         "--output_dir",
         type=str,
-        default="/data1/jinhang/Projects/Unmanned_ship_RTDETR/dataset/",
+        default="/data1/zuokun/code/USV/Unmanned_ship_RTDETR_v2/dataset/",
         help="Output directory for split dataset"
     )
     parser.add_argument(

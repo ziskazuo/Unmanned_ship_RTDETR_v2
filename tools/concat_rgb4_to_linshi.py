@@ -19,12 +19,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--dataset-root",
         type=Path,
-        default=Path("/data1/liziao/USV/dataset/sealand_data/dataset"),
+        default=Path("/data1/zuokun/code/USV/Unmanned_ship_RTDETR_v2/prepared"),
     )
     parser.add_argument(
         "--output-root",
         type=Path,
-        default=Path("/data1/ZK/Dataset/linshi"),
+        default=Path("/data1/zuokun/code/USV/Unmanned_ship_RTDETR_v2/output/linshi"),
     )
     parser.add_argument(
         "--splits",

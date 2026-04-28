@@ -16,17 +16,23 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import json
+import os
+
 import paddle
 import paddle.nn as nn
 import paddle.nn.functional as F
+import paddle.distributed as dist
 import numpy as np
 from ppdet.core.workspace import register
+from ppdet.utils.logger import setup_logger
 import pycocotools.mask as mask_util
 from ..initializer import linear_init_, constant_
 from ..transformers.utils import inverse_sigmoid
 
 __all__ = ['DETRHead', 'DeformableDETRHead', 'DINOHead', 'MaskDINOHead',
            'DINOHead_Rotate', 'DINOHead_Rotate_RouteROI']
+logger = setup_logger(__name__)
 
 
 class MLP(nn.Layer):
@@ -500,6 +506,13 @@ class DINOHead_Rotate_RouteROI(nn.Layer):
                  roi_resolution=7,
                  route_invalid_logit_bias=2.0,
                  visible_logit_weight=1.0,
+                 use_3d_height_cuboid_projection=False,
+                 height_prior_path='',
+                 height_prior_stat='p75',
+                 roi_expand_ratio=1.15,
+                 route_mode='learned',
+                 smoke_debug_steps=0,
+                 smoke_debug_log_every=1,
                  loss='DINOLoss_Rotate_RouteROI'):
         super(DINOHead_Rotate_RouteROI, self).__init__()
         self.num_classes = num_classes
@@ -508,6 +521,16 @@ class DINOHead_Rotate_RouteROI(nn.Layer):
         self.roi_resolution = roi_resolution
         self.route_invalid_logit_bias = float(route_invalid_logit_bias)
         self.visible_logit_weight = float(visible_logit_weight)
+        self.use_3d_height_cuboid_projection = bool(use_3d_height_cuboid_projection)
+        self.height_prior_path = str(height_prior_path or '')
+        self.height_prior_stat = str(height_prior_stat or 'p75')
+        self.roi_expand_ratio = float(roi_expand_ratio)
+        self.route_mode = self._normalize_route_mode(route_mode)
+        self.smoke_debug_steps = max(int(smoke_debug_steps), 0)
+        self.smoke_debug_log_every = max(int(smoke_debug_log_every), 1)
+        self._smoke_debug_step = 0
+        self.class_name_order = self._default_class_name_order(num_classes)
+        self.height_prior_by_class = self._build_height_prior_by_class()
         self.loss = loss
 
         route_in_dim = hidden_dim + 5 + 4 + 16
@@ -530,6 +553,241 @@ class DINOHead_Rotate_RouteROI(nn.Layer):
         linear_init_(self.route_primary_head)
         linear_init_(self.visible_head)
         linear_init_(self.cam_cls_head)
+
+    def _default_class_name_order(self, num_classes):
+        if int(num_classes) == 4:
+            return ['CargoShip', 'CruiseShip', 'FishingVessel', 'RecreationalBoat']
+        return [str(i) for i in range(int(num_classes))]
+
+    def _normalize_route_mode(self, route_mode):
+        mode = str(route_mode or 'learned').strip().lower()
+        valid_modes = {'learned', 'hard_sector_center', 'hard_sector_polygon'}
+        if mode not in valid_modes:
+            raise ValueError(
+                f"Unsupported route_mode={route_mode}. "
+                f"Expected one of {sorted(valid_modes)}.")
+        return mode
+
+    def _default_height_prior_map(self):
+        # Super4 class defaults (meters), from dataset-wide empirical stats.
+        return {
+            'CargoShip': 46.55,
+            'CruiseShip': 69.77,
+            'FishingVessel': 34.33,
+            'RecreationalBoat': 9.18,
+        }
+
+    def _load_height_prior_from_file(self):
+        if not self.height_prior_path:
+            return {}
+        if not os.path.isfile(self.height_prior_path):
+            return {}
+        try:
+            with open(self.height_prior_path, 'r', encoding='utf-8') as handle:
+                payload = json.load(handle)
+        except Exception:
+            return {}
+        if not isinstance(payload, dict):
+            return {}
+
+        stat_key = self.height_prior_stat
+        candidate = None
+        if 'stats' in payload and isinstance(payload['stats'], dict):
+            candidate = payload['stats'].get(stat_key)
+        if candidate is None:
+            candidate = payload.get(stat_key)
+
+        # Per-class object style: {ClassName: {p75: xx}}
+        if candidate is None:
+            per_class = {}
+            for key, value in payload.items():
+                if isinstance(value, dict) and stat_key in value:
+                    per_class[key] = value[stat_key]
+            if per_class:
+                candidate = per_class
+
+        # Flat map style: {ClassName: xx}
+        if candidate is None and all(
+                not isinstance(v, (dict, list, tuple))
+                for v in payload.values()):
+            candidate = payload
+
+        if not isinstance(candidate, dict):
+            return {}
+
+        out = {}
+        for key, value in candidate.items():
+            try:
+                out[str(key)] = float(value)
+            except Exception:
+                continue
+        return out
+
+    def _build_height_prior_by_class(self):
+        default_map = self._default_height_prior_map()
+        file_map = self._load_height_prior_from_file()
+        merged = default_map.copy()
+        merged.update(file_map)
+
+        fallback_value = float(np.median(list(default_map.values()))) \
+            if default_map else 20.0
+        prior_by_class = []
+        for idx, class_name in enumerate(self.class_name_order):
+            value = merged.get(class_name, None)
+            if value is None:
+                value = merged.get(str(idx), None)
+            if value is None:
+                value = fallback_value
+            prior_by_class.append(max(float(value), 0.5))
+        return prior_by_class
+
+    @staticmethod
+    def _meta_to_list(value):
+        if isinstance(value, (list, tuple)):
+            return [
+                item if isinstance(item, paddle.Tensor) else paddle.to_tensor(item)
+                for item in value
+            ]
+        if isinstance(value, paddle.Tensor):
+            return [value[i] for i in range(value.shape[0])]
+        return [paddle.to_tensor(value)]
+
+    @staticmethod
+    def _scalar_to_float(value):
+        if isinstance(value, paddle.Tensor):
+            arr = np.asarray(value.detach().numpy(), dtype=np.float64).reshape([-1])
+            return float(arr[0]) if arr.size > 0 else 0.0
+        return float(value)
+
+    def _count_primary_camera_none(self, inputs):
+        gt_primary = inputs.get('gt_primary_camera', None)
+        if gt_primary is None:
+            return 0, 0
+        total = 0
+        none_count = 0
+        for per_sample in self._meta_to_list(gt_primary):
+            if per_sample is None:
+                continue
+            primary = per_sample.reshape([-1]).astype('int64')
+            total += int(primary.shape[0])
+            if primary.shape[0] == 0:
+                continue
+            none_count += int(
+                np.asarray(
+                    (primary == 4).astype('int64').sum().numpy(),
+                    dtype=np.int64).reshape([-1])[0])
+        return none_count, total
+
+    def _hard_route_camera_dist_from_gt(self, inputs):
+        gt_rbox = inputs.get('gt_rbox', None)
+        if gt_rbox is None:
+            return np.zeros(5, dtype=np.int64), 0
+        gt_rbox_list = self._meta_to_list(gt_rbox)
+        if not gt_rbox_list:
+            return np.zeros(5, dtype=np.int64), 0
+
+        batch_size = len(gt_rbox_list)
+        radar_hw = self._radar_hw(inputs, batch_size)
+        lidar_range = paddle.to_tensor(
+            inputs.get('lidar_range', 4000.0), dtype='float32')
+        if len(lidar_range.shape) == 0:
+            lidar_range = lidar_range.reshape([1]).tile([batch_size])
+        elif len(lidar_range.shape) > 1:
+            lidar_range = lidar_range.reshape([batch_size, -1])[:, 0]
+        elif lidar_range.shape[0] == 1 and batch_size > 1:
+            lidar_range = lidar_range.tile([batch_size])
+
+        route_dist = np.zeros(5, dtype=np.int64)
+        gt_total = 0
+        for batch_id, gt_per_sample in enumerate(gt_rbox_list):
+            if gt_per_sample is None:
+                continue
+            gt_per_sample = gt_per_sample.astype('float32')
+            if len(gt_per_sample.shape) == 1:
+                gt_per_sample = gt_per_sample.reshape([1, -1])
+            if gt_per_sample.shape[0] == 0:
+                continue
+
+            center_uv = gt_per_sample[:, :2]
+            radar_res = float(
+                np.asarray(
+                    radar_hw[batch_id, 0].numpy(),
+                    dtype=np.float32).reshape([-1])[0])
+            lidar_val = float(
+                np.asarray(
+                    lidar_range[batch_id].numpy(),
+                    dtype=np.float32).reshape([-1])[0])
+            scale = (radar_res * 0.5) / max(lidar_val, 1e-6)
+            center_x = radar_res * 0.5
+            center_y = radar_res * 0.5
+            metric_x = (center_y - center_uv[:, 1]) / scale
+            metric_y = (center_uv[:, 0] - center_x) / scale
+            metric_center = paddle.stack([metric_x, metric_y], axis=-1)
+
+            hard_cam = self._hard_sector_camera_from_center(metric_center)
+            hard_np = np.asarray(
+                hard_cam.astype('int64').numpy(),
+                dtype=np.int64).reshape([-1])
+            route_dist[:4] += np.bincount(
+                np.clip(hard_np, 0, 3), minlength=4)[:4]
+            gt_total += int(hard_np.shape[0])
+        return route_dist, gt_total
+
+    def _maybe_log_smoke_debug(self, inputs, selected_camera, geom_visible,
+                               use_camera, loss_dict):
+        if self.smoke_debug_steps <= 0:
+            return
+        step_id = self._smoke_debug_step
+        self._smoke_debug_step += 1
+        if step_id >= self.smoke_debug_steps:
+            return
+        if step_id % self.smoke_debug_log_every != 0:
+            return
+        if dist.get_world_size() >= 2 and dist.get_rank() != 0:
+            return
+
+        route_dist, hard_route_total = self._hard_route_camera_dist_from_gt(inputs)
+
+        geom_visible_true_ratio = self._scalar_to_float(
+            (geom_visible > 0.5).astype('float32').mean())
+        camera_fusion_used_ratio = self._scalar_to_float(
+            use_camera.astype('float32').mean())
+
+        selected_not_none = selected_camera != 4
+        fusion_off = use_camera <= 0.5
+        geom_fallback = paddle.logical_and(selected_not_none, fusion_off)
+        geom_fallback_count = int(
+            np.asarray(
+                geom_fallback.astype('int64').sum().numpy(),
+                dtype=np.int64).reshape([-1])[0])
+
+        primary_none_count, primary_total = self._count_primary_camera_none(inputs)
+
+        loss_cam = self._scalar_to_float(
+            loss_dict.get('loss_cam_class', paddle.zeros([1], dtype='float32')))
+        loss_proj_l1 = self._scalar_to_float(
+            loss_dict.get('loss_proj_l1', paddle.zeros([1], dtype='float32')))
+        loss_proj_iou = self._scalar_to_float(
+            loss_dict.get('loss_proj_iou', paddle.zeros([1], dtype='float32')))
+        loss_route_primary = self._scalar_to_float(
+            loss_dict.get('loss_route_primary', paddle.zeros([1], dtype='float32')))
+        loss_visible = self._scalar_to_float(
+            loss_dict.get('loss_visible', paddle.zeros([1], dtype='float32')))
+
+        logger.info(
+            "[RouteROISmokeDebug][step=%d] route_mode=%s "
+            "hard_route_camera_id_dist={0:%d,1:%d,2:%d,3:%d,4:%d} "
+            "hard_route_total=%d "
+            "geom_visible_true_ratio=%.4f camera_fusion_used_ratio=%.4f "
+            "geom_visible_fallback_count=%d primary_camera_none_count=%d/%d "
+            "loss_cam_class_active=%s loss_proj_l1_active=%s "
+            "loss_proj_iou_active=%s loss_route_primary=%.6f loss_visible=%.6f",
+            step_id, self.route_mode, int(route_dist[0]), int(route_dist[1]),
+            int(route_dist[2]), int(route_dist[3]), int(route_dist[4]),
+            hard_route_total, geom_visible_true_ratio, camera_fusion_used_ratio,
+            geom_fallback_count, primary_none_count, primary_total,
+            str(loss_cam > 1e-12), str(loss_proj_l1 > 1e-12),
+            str(loss_proj_iou > 1e-12), loss_route_primary, loss_visible)
 
     def _ensure_batch_tensor(self, value, batch_size=None, dtype='float32'):
         tensor = paddle.to_tensor(value, dtype=dtype)
@@ -584,7 +842,142 @@ class DINOHead_Rotate_RouteROI(nn.Layer):
         y = (corners_uv[..., 0] - cx.unsqueeze(-1).unsqueeze(-1)) / scale.unsqueeze(-1).unsqueeze(-1)
         return paddle.stack([x, y], axis=-1)
 
-    def _project_metric_corners(self, metric_xy, inputs):
+    def _hard_sector_camera_from_center(self, metric_center_xy):
+        angle = paddle.atan2(metric_center_xy[..., 1], metric_center_xy[..., 0])
+        selected = paddle.full(angle.shape, 2, dtype='int64')  # left by default
+        front = paddle.logical_and(angle >= -np.pi / 4.0, angle < np.pi / 4.0)
+        right = paddle.logical_and(angle >= np.pi / 4.0, angle < 3.0 * np.pi / 4.0)
+        back = paddle.logical_or(angle >= 3.0 * np.pi / 4.0, angle < -3.0 * np.pi / 4.0)
+        selected = paddle.where(front, paddle.full_like(selected, 1), selected)
+        selected = paddle.where(right, paddle.full_like(selected, 3), selected)
+        selected = paddle.where(back, paddle.full_like(selected, 0), selected)
+        return selected
+
+    @staticmethod
+    def _polygon_area_np(poly):
+        if poly is None or len(poly) < 3:
+            return 0.0
+        area = 0.0
+        for idx in range(len(poly)):
+            x1, y1 = float(poly[idx][0]), float(poly[idx][1])
+            x2, y2 = float(poly[(idx + 1) % len(poly)][0]), float(poly[(idx + 1) % len(poly)][1])
+            area += x1 * y2 - x2 * y1
+        return abs(area) * 0.5
+
+    @staticmethod
+    def _clip_polygon_halfplane_np(poly, a, b, c=0.0, keep_ge=True, eps=1e-9):
+        if poly is None or len(poly) < 3:
+            return np.zeros((0, 2), dtype=np.float32)
+
+        def value(pt):
+            return float(a * pt[0] + b * pt[1] + c)
+
+        def inside(v):
+            return v >= -eps if keep_ge else v <= eps
+
+        def intersect(p1, p2, v1, v2):
+            if abs(v1 - v2) < eps:
+                return np.asarray(p1, dtype=np.float32)
+            t = v1 / (v1 - v2)
+            return np.asarray([
+                float(p1[0]) + t * (float(p2[0]) - float(p1[0])),
+                float(p1[1]) + t * (float(p2[1]) - float(p1[1])),
+            ], dtype=np.float32)
+
+        output = []
+        prev = np.asarray(poly[-1], dtype=np.float32)
+        prev_v = value(prev)
+        prev_in = inside(prev_v)
+        for raw in poly:
+            curr = np.asarray(raw, dtype=np.float32)
+            curr_v = value(curr)
+            curr_in = inside(curr_v)
+            if curr_in:
+                if not prev_in:
+                    output.append(intersect(prev, curr, prev_v, curr_v))
+                output.append(curr)
+            elif prev_in:
+                output.append(intersect(prev, curr, prev_v, curr_v))
+            prev = curr
+            prev_v = curr_v
+            prev_in = curr_in
+        if len(output) < 3:
+            return np.zeros((0, 2), dtype=np.float32)
+        return np.asarray(output, dtype=np.float32)
+
+    @classmethod
+    def _sector_overlap_areas_np(cls, poly):
+        poly = np.asarray(poly, dtype=np.float32)
+        if poly.ndim != 2 or poly.shape[0] < 3 or poly.shape[1] != 2:
+            return np.zeros(4, dtype=np.float32)
+
+        sector_planes = {
+            # camera 0=Back:  y - x >= 0 and x + y <= 0
+            0: [(-1.0, 1.0, 0.0, True), (1.0, 1.0, 0.0, False)],
+            # camera 1=Front: x - y >= 0 and x + y >= 0
+            1: [(1.0, -1.0, 0.0, True), (1.0, 1.0, 0.0, True)],
+            # camera 2=Left:  x - y >= 0 and x + y <= 0
+            2: [(1.0, -1.0, 0.0, True), (1.0, 1.0, 0.0, False)],
+            # camera 3=Right: y - x >= 0 and x + y >= 0
+            3: [(-1.0, 1.0, 0.0, True), (1.0, 1.0, 0.0, True)],
+        }
+
+        out = np.zeros(4, dtype=np.float32)
+        for cam in range(4):
+            clipped = poly
+            for a, b, c, keep_ge in sector_planes[cam]:
+                clipped = cls._clip_polygon_halfplane_np(
+                    clipped, a=a, b=b, c=c, keep_ge=keep_ge)
+                if clipped.shape[0] < 3:
+                    break
+            out[cam] = float(cls._polygon_area_np(clipped))
+        return out
+
+    def _hard_sector_camera_from_polygon(self, metric_corners, fallback_camera):
+        corners_np = np.asarray(metric_corners.detach().numpy(), dtype=np.float32)
+        fallback_np = np.asarray(fallback_camera.detach().numpy(), dtype=np.int64)
+        hard_np = fallback_np.copy()
+
+        batch_size, num_queries = hard_np.shape
+        for batch_id in range(batch_size):
+            for query_id in range(num_queries):
+                areas = self._sector_overlap_areas_np(corners_np[batch_id, query_id])
+                if float(np.sum(areas)) <= 1e-6:
+                    continue
+                hard_np[batch_id, query_id] = int(np.argmax(areas))
+        return paddle.to_tensor(hard_np, dtype='int64', place=metric_corners.place)
+
+    def _estimate_query_heights(self, class_logits, batch_size, num_queries):
+        if class_logits is None:
+            default_height = float(np.median(self.height_prior_by_class)) \
+                if self.height_prior_by_class else 20.0
+            return paddle.full([batch_size, num_queries], default_height, dtype='float32')
+
+        class_ids = paddle.argmax(class_logits, axis=-1).astype('int64')
+        prior_table = paddle.to_tensor(self.height_prior_by_class, dtype='float32')
+        flat_ids = class_ids.reshape([-1])
+        flat_heights = paddle.gather(prior_table, flat_ids, axis=0)
+        query_heights = flat_heights.reshape([batch_size, num_queries])
+        return paddle.clip(query_heights, min=0.5)
+
+    def _expand_boxes_around_center(self, boxes, width, height):
+        ratio = max(float(self.roi_expand_ratio), 1e-6)
+        if abs(ratio - 1.0) < 1e-6:
+            return boxes
+        cx = (boxes[..., 0] + boxes[..., 2]) * 0.5
+        cy = (boxes[..., 1] + boxes[..., 3]) * 0.5
+        half_w = (boxes[..., 2] - boxes[..., 0]) * 0.5 * ratio
+        half_h = (boxes[..., 3] - boxes[..., 1]) * 0.5 * ratio
+
+        x1 = paddle.clip(cx - half_w, min=0.0)
+        y1 = paddle.clip(cy - half_h, min=0.0)
+        x2 = paddle.minimum(cx + half_w, width - 1.0)
+        y2 = paddle.minimum(cy + half_h, height - 1.0)
+        x2 = paddle.maximum(x2, x1)
+        y2 = paddle.maximum(y2, y1)
+        return paddle.stack([x1, y1, x2, y2], axis=-1)
+
+    def _project_metric_corners_fixed_plane(self, metric_xy, inputs):
         # Some training branches still carry a singleton decoder dimension here.
         # RouteROI projection expects [B, Q, 4, 2], so collapse [B, 1, Q, 4, 2].
         if len(metric_xy.shape) == 5 and metric_xy.shape[1] == 1:
@@ -644,6 +1037,98 @@ class DINOHead_Rotate_RouteROI(nn.Layer):
         visible = paddle.logical_and(visible, ymax > ymin)
         return boxes, corners_2d, visible.astype('float32')
 
+    def _project_metric_corners_height_cuboid(self, metric_xy, inputs, class_logits):
+        # Collapse optional singleton decoder dimension.
+        if len(metric_xy.shape) == 5 and metric_xy.shape[1] == 1:
+            metric_xy = metric_xy.squeeze(1)
+        batch_size = metric_xy.shape[0]
+        num_queries = metric_xy.shape[1]
+        num_cameras = 4
+
+        camera_intrinsics = self._ensure_batch_tensor(
+            inputs['camera_intrinsics'], batch_size=batch_size)
+        camera_extrinsics = self._ensure_batch_tensor(
+            inputs['camera_extrinsics'], batch_size=batch_size)
+        camera_img_size = self._ensure_batch_tensor(
+            inputs['camera_img_size'], batch_size=batch_size)
+        projection_plane_height = paddle.to_tensor(
+            inputs.get('projection_plane_height', -6.0), dtype='float32')
+        if len(projection_plane_height.shape) == 0:
+            projection_plane_height = projection_plane_height.reshape([1]).tile([batch_size])
+        elif len(projection_plane_height.shape) > 1:
+            projection_plane_height = projection_plane_height.reshape([batch_size, -1])[:, 0]
+
+        bottom_z = projection_plane_height.reshape([batch_size, 1, 1, 1]).tile(
+            [1, num_queries, 4, 1])
+        est_height = self._estimate_query_heights(class_logits, batch_size, num_queries)
+        top_z = bottom_z + est_height.reshape([batch_size, num_queries, 1, 1]).tile([1, 1, 4, 1])
+
+        bottom_xyz = paddle.concat([metric_xy, bottom_z], axis=-1)
+        top_xyz = paddle.concat([metric_xy, top_z], axis=-1)
+        points_xyz = paddle.concat([bottom_xyz, top_xyz], axis=2)
+        ones = paddle.ones_like(points_xyz[..., :1])
+        points_homo = paddle.concat([points_xyz, ones], axis=-1)
+
+        points_homo = points_homo.unsqueeze(2).unsqueeze(-1).tile([1, 1, num_cameras, 1, 1, 1])
+        ext = camera_extrinsics.unsqueeze(1).unsqueeze(3)
+        cam_points = paddle.matmul(ext, points_homo).squeeze(-1)
+        cam_x = cam_points[..., 0]
+        cam_y = cam_points[..., 1]
+        cam_z = cam_points[..., 2]
+
+        fx = camera_intrinsics[:, :, 0, 0].unsqueeze(1).unsqueeze(-1)
+        fy = camera_intrinsics[:, :, 1, 1].unsqueeze(1).unsqueeze(-1)
+        cx = camera_intrinsics[:, :, 0, 2].unsqueeze(1).unsqueeze(-1)
+        cy = camera_intrinsics[:, :, 1, 2].unsqueeze(1).unsqueeze(-1)
+
+        safe_z = paddle.where(cam_z.abs() < 1e-6, paddle.full_like(cam_z, 1e-6), cam_z)
+        u = fx * cam_x / safe_z + cx
+        v = fy * cam_y / safe_z + cy
+        corners_2d = paddle.stack([u, v], axis=-1)
+
+        valid_depth = cam_z > 1e-4
+        valid_depth_count = valid_depth.astype('int32').sum(axis=-1)
+        has_depth = valid_depth_count >= 1
+
+        large_pos = paddle.full_like(corners_2d[..., 0], 1e8)
+        large_neg = paddle.full_like(corners_2d[..., 0], -1e8)
+        x_for_min = paddle.where(valid_depth, corners_2d[..., 0], large_pos)
+        y_for_min = paddle.where(valid_depth, corners_2d[..., 1], large_pos)
+        x_for_max = paddle.where(valid_depth, corners_2d[..., 0], large_neg)
+        y_for_max = paddle.where(valid_depth, corners_2d[..., 1], large_neg)
+
+        xmin_raw = x_for_min.min(axis=-1)
+        ymin_raw = y_for_min.min(axis=-1)
+        xmax_raw = x_for_max.max(axis=-1)
+        ymax_raw = y_for_max.max(axis=-1)
+
+        width = camera_img_size[:, :, 0].unsqueeze(1)
+        height = camera_img_size[:, :, 1].unsqueeze(1)
+
+        xmin_clip = paddle.clip(xmin_raw, min=0.0)
+        ymin_clip = paddle.clip(ymin_raw, min=0.0)
+        xmax_clip = paddle.minimum(xmax_raw, width - 1.0)
+        ymax_clip = paddle.minimum(ymax_raw, height - 1.0)
+
+        inter_w = paddle.maximum(xmax_clip - xmin_clip, paddle.zeros_like(xmax_clip))
+        inter_h = paddle.maximum(ymax_clip - ymin_clip, paddle.zeros_like(ymax_clip))
+        inter_area = inter_w * inter_h
+        has_intersection = paddle.logical_and(inter_w > 0.0, inter_h > 0.0)
+
+        boxes = paddle.stack([xmin_clip, ymin_clip, xmax_clip, ymax_clip], axis=-1)
+        boxes = self._expand_boxes_around_center(boxes, width, height)
+
+        visible = paddle.logical_and(has_depth, has_intersection)
+        visible = paddle.logical_and(visible, inter_area > 4.0)
+        boxes = paddle.where(visible.unsqueeze(-1), boxes, paddle.zeros_like(boxes))
+        return boxes, corners_2d, visible.astype('float32')
+
+    def _project_metric_corners(self, metric_xy, inputs, class_logits=None):
+        if self.use_3d_height_cuboid_projection:
+            return self._project_metric_corners_height_cuboid(
+                metric_xy, inputs, class_logits)
+        return self._project_metric_corners_fixed_plane(metric_xy, inputs)
+
     def _roi_align_single_level(self, feat, boxes, batch_ids, spatial_scale):
         if boxes.shape[0] == 0:
             return paddle.zeros(
@@ -683,15 +1168,22 @@ class DINOHead_Rotate_RouteROI(nn.Layer):
                                      camera_feats,
                                      query_feat,
                                      geom_boxes,
-                                     camera_img_size):
+                                     camera_img_size,
+                                     camera_selector=None):
         batch_size, num_queries, num_cameras, _ = geom_boxes.shape
         feat_dim = camera_feats[0].shape[1] * len(camera_feats)
         per_camera_roi_feat = paddle.zeros(
             [batch_size, num_queries, num_cameras, feat_dim], dtype=query_feat.dtype)
         refined_boxes = paddle.zeros_like(geom_boxes)
+        selector_flat = None
+        if camera_selector is not None:
+            selector_flat = camera_selector.reshape([-1]).astype('int64')
         for camera_id in range(num_cameras):
             boxes = geom_boxes[:, :, camera_id, :].reshape([-1, 4])
             valid = paddle.logical_and(boxes[:, 2] > boxes[:, 0], boxes[:, 3] > boxes[:, 1])
+            if selector_flat is not None:
+                camera_mask = selector_flat == camera_id
+                valid = paddle.logical_and(valid, camera_mask)
             valid_idx = paddle.nonzero(valid).flatten()
             if valid_idx.shape[0] == 0:
                 continue
@@ -766,7 +1258,7 @@ class DINOHead_Rotate_RouteROI(nn.Layer):
         metric_corners = self._radar_pixels_to_metric(
             radar_corners, radar_resolution, lidar_range)
         geom_boxes, _geom_corners, geom_visible = self._project_metric_corners(
-            metric_corners, inputs)
+            metric_corners, inputs, class_logits=radar_logits)
 
         camera_img_size = self._ensure_batch_tensor(
             inputs['camera_img_size'], batch_size=batch_size)
@@ -793,16 +1285,28 @@ class DINOHead_Rotate_RouteROI(nn.Layer):
             (1.0 - geom_visible) * self.route_invalid_logit_bias
         route_logits_soft = paddle.concat(
             [route_camera_logits, route_primary_logits[:, :, 4:5]], axis=-1)
-        route_prob = F.softmax(route_logits_soft, axis=-1)
+        selected_camera = paddle.argmax(route_logits_soft, axis=-1)
+        if self.route_mode != 'learned':
+            metric_center = metric_corners.mean(axis=2)
+            selected_camera = self._hard_sector_camera_from_center(metric_center)
+            if self.route_mode == 'hard_sector_polygon':
+                selected_camera = self._hard_sector_camera_from_polygon(
+                    metric_corners, selected_camera)
+            route_prob = F.one_hot(selected_camera.astype('int64'), num_classes=5).astype(
+                route_logits_soft.dtype)
+        else:
+            route_prob = F.softmax(route_logits_soft, axis=-1)
 
+        selected_camera_clamped = paddle.clip(selected_camera, min=0, max=3)
+        roi_camera_selector = selected_camera_clamped \
+            if self.route_mode != 'learned' else None
         per_camera_roi_feat, refined_boxes = self._extract_camera_roi_features(
-            body_feats, last_query_feat, geom_boxes, camera_img_size)
+            body_feats, last_query_feat, geom_boxes, camera_img_size,
+            camera_selector=roi_camera_selector)
         per_camera_roi_feat = per_camera_roi_feat * geom_visible.unsqueeze(-1)
         refined_boxes = refined_boxes * geom_visible.unsqueeze(-1)
         per_camera_cls_logits = self.cam_cls_head(per_camera_roi_feat)
 
-        selected_camera = paddle.argmax(route_logits_soft, axis=-1)
-        selected_camera_clamped = paddle.clip(selected_camera, min=0, max=3)
         gather_idx = selected_camera_clamped.unsqueeze(-1).unsqueeze(-1).tile(
             [1, 1, 1, per_camera_roi_feat.shape[-1]])
         selected_camera_feat = paddle.take_along_axis(
@@ -844,7 +1348,7 @@ class DINOHead_Rotate_RouteROI(nn.Layer):
                     "shape across the whole batch.")
             matcher_im_shape = paddle.stack([ref_im_shape[0, 1], ref_im_shape[0, 0]])
 
-            return self.loss(
+            loss_dict = self.loss(
                 out_bboxes,
                 out_logits,
                 out_angles_cls,
@@ -860,6 +1364,13 @@ class DINOHead_Rotate_RouteROI(nn.Layer):
                 camera_cls_logits=per_camera_cls_logits,
                 camera_refined_boxes=refined_boxes,
                 inputs=inputs)
+            self._maybe_log_smoke_debug(
+                inputs=inputs,
+                selected_camera=selected_camera,
+                geom_visible=geom_visible,
+                use_camera=use_camera.squeeze(-1),
+                loss_dict=loss_dict)
+            return loss_dict
         final_boxes = paddle.concat([radar_boxes, radar_angles], axis=-1)
         return (final_boxes, fused_logits, None)
 @register

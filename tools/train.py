@@ -151,7 +151,13 @@ def run(FLAGS, cfg):
         trainer.load_weights(cfg.pretrain_weights)
 
     # training
-    trainer.train(FLAGS.eval) 
+    validate_during_train = bool(FLAGS.eval) or bool(
+        cfg.get('force_eval_during_train', False))
+    if validate_during_train and not FLAGS.eval:
+        logger.info(
+            "force_eval_during_train=True in config, enabling eval during training."
+        )
+    trainer.train(validate_during_train)
 
 
 def main():

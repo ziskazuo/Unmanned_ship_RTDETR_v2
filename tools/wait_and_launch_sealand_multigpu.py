@@ -119,7 +119,7 @@ def main():
                         help='Require the same candidate GPU group to remain free for this many consecutive checks.')
     parser.add_argument('--train-script', default='tools/train_sealand_gpu4.sh',
                         help='Launcher script to execute once GPUs are free.')
-    parser.add_argument('--config', default='configs/rtdetr/sealand_radardetr_r50vd_50e_bs2_fp32_stable_4km_super4_960.yml',
+    parser.add_argument('--config', default='configs/rtdetr/sealand_radardetr_r50vd_route_roi_p2_2km_super4_r1536_c1024x512_hbb_min8_mix721.yml',
                         help='Training config passed to the launcher.')
     parser.add_argument('--python', default='',
                         help='Optional python interpreter passed through to the launcher.')

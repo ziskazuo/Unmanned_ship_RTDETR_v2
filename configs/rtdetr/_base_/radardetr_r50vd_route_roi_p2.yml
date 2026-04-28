@@ -89,10 +89,17 @@ RTDETRTransformer_Rotate_RouteROI:
 
 DINOHead_Rotate_RouteROI:
   num_classes: 4
+  route_mode: learned
   route_invalid_logit_bias: 2.0
   visible_logit_weight: 1.0
+  use_3d_height_cuboid_projection: True
+  height_prior_path: configs/priors/sealand_height_prior_super4.json
+  height_prior_stat: p75
+  roi_expand_ratio: 1.15
   loss:
     name: DINOLoss_Rotate_RouteROI
+    enable_route_loss: True
+    enable_visible_loss: True
     loss_coeff:
       class: 1
       bbox: 5

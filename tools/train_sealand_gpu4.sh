@@ -4,7 +4,7 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 ENV_DIR="/data1/zuokun/vene/Unmanned_ship_RTDETR"
 PYTHON_BIN="${ENV_DIR}/bin/python"
-CONFIG_PATH="configs/rtdetr/sealand_radardetr_r50vd_50e_bs2_fp32_stable_4km_super4_960.yml"
+CONFIG_PATH="configs/rtdetr/sealand_radardetr_r50vd_route_roi_p2_2km_super4_r1536_c1024x512_hbb_min8_mix721.yml"
 GPUS="4"
 USE_AMP=0
 ALLOCATOR_STRATEGY="auto_growth"

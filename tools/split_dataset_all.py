@@ -15,8 +15,8 @@ Features:
 - Reproducible splits with random seed
 
 Usage:
-    # Process all datasets in /data1/ZK/USV_v2/ with 80% training data
-    python split_dataset_all.py --source_root /data1/ZK/USV_v2 --train_ratio 0.8
+    # Process all datasets in /data1/zuokun/code/USV/Unmanned_ship_RTDETR_v2/prepared/ with 80% training data
+    python split_dataset_all.py --source_root /data1/zuokun/code/USV/Unmanned_ship_RTDETR_v2/prepared --train_ratio 0.8
     
     # Use existing frame mapping and indices files
     python split_dataset_all.py --use_existing_mapping --mapping_file frame_mapping.txt --output_dir ./dataset3/
@@ -33,8 +33,8 @@ from collections import defaultdict
 
 class MultiDatasetSplitter:
     def __init__(self, 
-                 source_root="/data1/ZK/USV_v2",
-                 output_dir="/data1/jinhang/Projects/Unmanned_ship_RTDETR/dataset/",
+                 source_root="/data1/zuokun/code/USV/Unmanned_ship_RTDETR_v2/prepared",
+                 output_dir="/data1/zuokun/code/USV/Unmanned_ship_RTDETR_v2/dataset/",
                  train_ratio=0.8,
                  random_seed=42,
                  use_existing_mapping=False,
@@ -423,13 +423,13 @@ def main():
     parser.add_argument(
         "--source_root",
         type=str,
-        default="/data1/ZK/USV_v2",
+        default="/data1/zuokun/code/USV/Unmanned_ship_RTDETR_v2/prepared",
         help="Root directory containing multiple dataset folders"
     )
     parser.add_argument(
         "--output_dir",
         type=str,
-        default="/data1/jinhang/Projects/Unmanned_ship_RTDETR/dataset3/",
+        default="/data1/zuokun/code/USV/Unmanned_ship_RTDETR_v2/dataset3/",
         help="Output directory for split dataset"
     )
     parser.add_argument(

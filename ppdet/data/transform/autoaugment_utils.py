@@ -214,7 +214,7 @@ def cutout(image, pad_size, replace=0):
     Returns:
         An image Tensor that is of type uint8.
     Example:
-        img = cv2.imread( "/home/vis/gry/train/img_data/test.jpg", cv2.COLOR_BGR2RGB )
+        img = cv2.imread("./example.jpg", cv2.COLOR_BGR2RGB)
         new_img = cutout(img, pad_size=50, replace=0)
     """
     image_height, image_width = image.shape[0], image.shape[1]

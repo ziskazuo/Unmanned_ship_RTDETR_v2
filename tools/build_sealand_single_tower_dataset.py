@@ -26,7 +26,7 @@ import yaml
 from PIL import Image
 
 
-DEFAULT_DATASET_ROOT = Path("/data1/liziao/USV/dataset/sealand_data/dataset")
+DEFAULT_DATASET_ROOT = Path("/data1/zuokun/code/USV/Unmanned_ship_RTDETR_v2/prepared")
 DEFAULT_OUTPUT_ROOT = Path("./prepared/sealand_single_tower_4km_super4_960_route_roi")
 CAMERA_CANONICAL_ORDER = (
     ("Back", "CamBack"),

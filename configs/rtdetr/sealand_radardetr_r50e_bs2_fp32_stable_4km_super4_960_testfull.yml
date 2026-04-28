@@ -4,7 +4,7 @@ _BASE_: [
 
 EvalDataset:
   !CameraRadar_COCODataSet
-    dataset_dir: /data1/zuokun/code/USV/Unmanned_ship_RTDETR/prepared/sealand_single_tower_4km_super4_960
+    dataset_dir: /data1/zuokun/code/USV/Unmanned_ship_RTDETR_v2/prepared/sealand_single_tower_4km_super4_960
     radar_image_dir: ''
     camera_image_dir: ''
     anno_path: test_coco.json

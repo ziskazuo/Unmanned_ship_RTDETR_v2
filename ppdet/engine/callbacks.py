@@ -260,15 +260,17 @@ class Checkpointer(Callback):
         epoch_id = status['epoch_id']
         weight = None
         save_name = None
+        save_only_best = bool(self.model.cfg.get('save_only_best', False))
         if dist.get_world_size() < 2 or dist.get_rank() == 0:
             if mode == 'train':
-                end_epoch = self.model.cfg.epoch
-                if (
-                        epoch_id + 1
-                ) % self.model.cfg.snapshot_epoch == 0 or epoch_id == end_epoch - 1:
-                    save_name = str(
-                        epoch_id) if epoch_id != end_epoch - 1 else "model_final"
-                    weight = self.weight.state_dict()
+                if not save_only_best:
+                    end_epoch = self.model.cfg.epoch
+                    if (
+                            epoch_id + 1
+                    ) % self.model.cfg.snapshot_epoch == 0 or epoch_id == end_epoch - 1:
+                        save_name = str(
+                            epoch_id) if epoch_id != end_epoch - 1 else "model_final"
+                        weight = self.weight.state_dict()
             elif mode == 'eval':
                 if 'save_best_model' in status and status['save_best_model']:
                     merged_eval_results = {}

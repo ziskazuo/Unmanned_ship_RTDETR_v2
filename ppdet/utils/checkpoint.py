@@ -408,7 +408,9 @@ def multi_2_match_state_dict(model_state_dict, weight_state_dict, mode='default'
 
     model_keys = sorted(model_state_dict.keys())
     weight_keys = sorted(weight_state_dict.keys())
-    weight_18_state_dict = paddle.load('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/rtdetr_r18vd_dec3_6x_coco.pdparams')
+    # Remove hard dependency on an external absolute path.
+    # Reuse current pretrained weights as IR matching source in multi_2 mode.
+    weight_18_state_dict = weight_state_dict
     weight_keys_ir = sorted(weight_18_state_dict.keys())
     def teacher_match(a, b):
         # skip student params

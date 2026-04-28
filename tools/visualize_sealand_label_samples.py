@@ -173,11 +173,11 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--dataset-root",
-        default="/data1/zuokun/code/USV/Unmanned_ship_RTDETR/prepared/sealand_single_tower_4km_super4",
+        default="/data1/zuokun/code/USV/Unmanned_ship_RTDETR_v2/prepared/sealand_single_tower_4km_super4",
     )
     parser.add_argument(
         "--output-root",
-        default="/data1/zuokun/code/USV/Unmanned_ship_RTDETR/output/label_check_4km_super4_20260323",
+        default="/data1/zuokun/code/USV/Unmanned_ship_RTDETR_v2/output/label_check_4km_super4_20260323",
     )
     parser.add_argument("--seed", type=int, default=20260323)
     parser.add_argument("--normal-per-split", type=int, default=4)

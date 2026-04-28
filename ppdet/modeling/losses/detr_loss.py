@@ -745,6 +745,8 @@ class DINOLoss_Rotate_RouteROI(DINOLoss_Rotate):
                  groupx3_v5=False,
                  groupx3_v6=False,
                  uni_match_ind=0,
+                 enable_route_loss=True,
+                 enable_visible_loss=True,
                  angle_ignore_short_side=2.0):
         loss_coeff = loss_coeff or {
             'class': 1,
@@ -774,6 +776,8 @@ class DINOLoss_Rotate_RouteROI(DINOLoss_Rotate):
             groupx3_v6=groupx3_v6,
             uni_match_ind=uni_match_ind,
             angle_ignore_short_side=angle_ignore_short_side)
+        self.enable_route_loss = bool(enable_route_loss)
+        self.enable_visible_loss = bool(enable_visible_loss)
 
     @staticmethod
     def _meta_to_list(value):
@@ -916,7 +920,7 @@ class DINOLoss_Rotate_RouteROI(DINOLoss_Rotate):
             'loss_proj_iou': zeros,
         }
 
-        if route_logits_all:
+        if self.enable_route_loss and route_logits_all:
             route_logits_all = paddle.concat(route_logits_all, axis=0)
             route_targets_all = paddle.concat(route_targets_all, axis=0)
             loss['loss_route_primary'] = F.cross_entropy(
@@ -924,7 +928,7 @@ class DINOLoss_Rotate_RouteROI(DINOLoss_Rotate):
             loss['loss_route_primary'] *= self.loss_coeff.get(
                 'route_primary', 1.0)
 
-        if visible_logits_all:
+        if self.enable_visible_loss and visible_logits_all:
             visible_logits_all = paddle.concat(visible_logits_all, axis=0)
             visible_targets_all = paddle.concat(visible_targets_all, axis=0)
             loss['loss_visible'] = F.binary_cross_entropy_with_logits(

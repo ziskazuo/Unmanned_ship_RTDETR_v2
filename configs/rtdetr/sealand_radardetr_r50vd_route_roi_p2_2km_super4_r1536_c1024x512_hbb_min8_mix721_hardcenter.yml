@@ -1,0 +1,13 @@
+_BASE_: [
+  './sealand_radardetr_r50vd_route_roi_p2_2km_super4_r1536_c1024x512_hbb_min8_mix721.yml',
+]
+
+save_dir: output/sealand_radardetr_r50vd_route_roi_p2_2km_super4_r1536_c1024x512_hbb_min8_mix721_hardcenter
+
+DINOHead_Rotate_RouteROI:
+  route_mode: hard_sector_center
+  smoke_debug_steps: 100
+  smoke_debug_log_every: 1
+  loss:
+    enable_route_loss: False
+    enable_visible_loss: False

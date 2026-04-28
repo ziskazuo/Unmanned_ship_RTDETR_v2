@@ -5,7 +5,7 @@ TrainDataset:
   !COCODataSet
     image_dir: Train/radar_bev
     anno_path: train_coco.json
-    dataset_dir: /data1/zuokun/code/USV/Unmanned_ship_RTDETR/prepared/sealand_single_tower_4km_super4_960
+    dataset_dir: /data1/zuokun/code/USV/Unmanned_ship_RTDETR_v2/prepared/sealand_single_tower_4km_super4_960
     data_fields: ['image', 'gt_bbox', 'gt_class', 'is_crowd', 'gt_poly']
     allow_empty: true
 
@@ -13,7 +13,7 @@ EvalDataset:
   !COCODataSet
     image_dir: Valid/radar_bev
     anno_path: valid_coco.json
-    dataset_dir: /data1/zuokun/code/USV/Unmanned_ship_RTDETR/prepared/sealand_single_tower_4km_super4_960
+    dataset_dir: /data1/zuokun/code/USV/Unmanned_ship_RTDETR_v2/prepared/sealand_single_tower_4km_super4_960
     data_fields: ['image', 'gt_bbox', 'gt_class', 'is_crowd', 'gt_poly']
     allow_empty: true
 
@@ -21,6 +21,6 @@ TestDataset:
   !COCODataSet
     image_dir: Test/radar_bev
     anno_path: test_coco.json
-    dataset_dir: /data1/zuokun/code/USV/Unmanned_ship_RTDETR/prepared/sealand_single_tower_4km_super4_960
+    dataset_dir: /data1/zuokun/code/USV/Unmanned_ship_RTDETR_v2/prepared/sealand_single_tower_4km_super4_960
     data_fields: ['image']
     allow_empty: true

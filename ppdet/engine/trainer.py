@@ -528,6 +528,9 @@ class Trainer(object):
 
         use_fused_allreduce_gradients = self.cfg[
             'use_fused_allreduce_gradients'] if 'use_fused_allreduce_gradients' in self.cfg else False
+        max_train_steps = int(self.cfg.get('max_train_steps', -1) or -1)
+        global_step = 0
+        stop_training = False
 
         for epoch_id in range(self.start_epoch, self.cfg.epoch):
             self.status['mode'] = 'train'
@@ -622,6 +625,14 @@ class Trainer(object):
                 if self.use_ema:
                     self.ema.update()
                 iter_tic = time.time()
+                global_step += 1
+                if max_train_steps > 0 and global_step >= max_train_steps:
+                    logger.info(
+                        "Reached max_train_steps=%d at epoch=%d step=%d, "
+                        "stopping training loop.",
+                        max_train_steps, epoch_id, step_id)
+                    stop_training = True
+                    break
 
             if self.cfg.get('unstructured_prune'):
                 self.pruner.update_params()
@@ -670,6 +681,8 @@ class Trainer(object):
                 # reset original weight
                 self.model.set_dict(weight)
                 self.status.pop('weight')
+            if stop_training:
+                break
 
         self._compose_callback.on_train_end(self.status)
 

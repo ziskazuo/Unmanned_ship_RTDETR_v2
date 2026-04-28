@@ -229,9 +229,9 @@ class PPMSDeformableAttention(MSDeformableAttention):
         # for ii in range(bs):
         #     # heatmap_image1 = cv2.applyColorMap(vis_imgs[ii],cv2.COLORMAP_JET)
         #     # heatmap_image2 = cv2.applyColorMap(ir_imgs[ii],cv2.COLORMAP_JET)
-        #     cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-oldm3fd-nobug/sample_location_0.12,0.08/'+'layer'+str(gt_meta['layer']+1)+'/'+
+        #     cv2.imwrite('<project_root>/output/ms-detrv3-oldm3fd-nobug/sample_location_0.12,0.08/'+'layer'+str(gt_meta['layer']+1)+'/'+
         #                 gt_meta['vis_im_file'][ii].split('/')[-1].split('.')[0]+'_vis.png',vis_imgs[ii])
-        #     cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-oldm3fd-nobug/sample_location_0.12,0.08/'+'layer'+str(gt_meta['layer']+1)+'/'+
+        #     cv2.imwrite('<project_root>/output/ms-detrv3-oldm3fd-nobug/sample_location_0.12,0.08/'+'layer'+str(gt_meta['layer']+1)+'/'+
         #                 gt_meta['ir_im_file'][ii].split('/')[-1].split('.')[0]+'_ir.png',ir_imgs[ii])
 
         # ## sample location of different semantic level visulize
@@ -365,11 +365,11 @@ class PPMSDeformableAttention(MSDeformableAttention):
         #     # heatmap_image1 = cv2.applyColorMap(vis_imgs[ii],cv2.COLORMAP_JET)
         #     # heatmap_image2 = cv2.applyColorMap(ir_imgs[ii],cv2.COLORMAP_JET)
         #     cv2.imwrite(
-        #         '/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-oldm3fd-nobug/sample_location_0.1,0.03_sematic/' + 'layer' + str(
+        #         '<project_root>/output/ms-detrv3-oldm3fd-nobug/sample_location_0.1,0.03_sematic/' + 'layer' + str(
         #             gt_meta['layer'] + 1) + '/' +
         #         gt_meta['vis_im_file'][ii].split('/')[-1].split('.')[0] + '_vis.png', vis_imgs[ii])
         #     cv2.imwrite(
-        #         '/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-oldm3fd-nobug/sample_location_0.1,0.03_sematic/' + 'layer' + str(
+        #         '<project_root>/output/ms-detrv3-oldm3fd-nobug/sample_location_0.1,0.03_sematic/' + 'layer' + str(
         #             gt_meta['layer'] + 1) + '/' +
         #         gt_meta['ir_im_file'][ii].split('/')[-1].split('.')[0] + '_ir.png', ir_imgs[ii])
 
@@ -4077,9 +4077,9 @@ class TransformerDecoder(nn.Layer):
             #                            radius - 2, color_g, -1)
             #
             #     for ii in range(bs):
-            #         cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-5level-m3fd/'+'mask_ir_point_'+str(i+1)+'/'+
+            #         cv2.imwrite('<project_root>/output/ms-detrv3-5level-m3fd/'+'mask_ir_point_'+str(i+1)+'/'+
             #                     gt_meta['vis_im_file'][ii].split('/')[-1].split('.')[0]+'_vis.png',vis_imgs[ii])
-            #         cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-5level-m3fd/'+'mask_ir_point_'+str(i+1)+'/'+
+            #         cv2.imwrite('<project_root>/output/ms-detrv3-5level-m3fd/'+'mask_ir_point_'+str(i+1)+'/'+
             #                     gt_meta['ir_im_file'][ii].split('/')[-1].split('.')[0]+'_ir.png',ir_imgs[ii])
 
 
@@ -4203,9 +4203,9 @@ class TransformerDecoder_RadarCamera(nn.Layer):
             #                            radius - 2, color_g, -1)
             #
             #     for ii in range(bs):
-            #         cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-5level-m3fd/'+'mask_ir_point_'+str(i+1)+'/'+
+            #         cv2.imwrite('<project_root>/output/ms-detrv3-5level-m3fd/'+'mask_ir_point_'+str(i+1)+'/'+
             #                     gt_meta['vis_im_file'][ii].split('/')[-1].split('.')[0]+'_vis.png',vis_imgs[ii])
-            #         cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-5level-m3fd/'+'mask_ir_point_'+str(i+1)+'/'+
+            #         cv2.imwrite('<project_root>/output/ms-detrv3-5level-m3fd/'+'mask_ir_point_'+str(i+1)+'/'+
             #                     gt_meta['ir_im_file'][ii].split('/')[-1].split('.')[0]+'_ir.png',ir_imgs[ii])
 
 
@@ -4543,9 +4543,9 @@ class TransformerDecoder_RANK(nn.Layer):
             #                            radius - 2, color_g, -1)
             #
             #     for ii in range(bs):
-            #         cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-5level-m3fd/'+'mask_ir_point_'+str(i+1)+'/'+
+            #         cv2.imwrite('<project_root>/output/ms-detrv3-5level-m3fd/'+'mask_ir_point_'+str(i+1)+'/'+
             #                     gt_meta['vis_im_file'][ii].split('/')[-1].split('.')[0]+'_vis.png',vis_imgs[ii])
-            #         cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-5level-m3fd/'+'mask_ir_point_'+str(i+1)+'/'+
+            #         cv2.imwrite('<project_root>/output/ms-detrv3-5level-m3fd/'+'mask_ir_point_'+str(i+1)+'/'+
             #                     gt_meta['ir_im_file'][ii].split('/')[-1].split('.')[0]+'_ir.png',ir_imgs[ii])
 
             #generate rank indicates
@@ -4664,7 +4664,7 @@ class TransformerDecoder_Group(nn.Layer):
             #     cv2.circle(image,(round(bboxes1[mm][0]),round(bboxes1[mm][1])),radius=1,color=(255,0,0),thickness=-1)
             #     cv2.circle(image, (round(bboxes2[mm][0]), round(bboxes2[mm][1])),radius=1, color=(0, 255, 0), thickness=-1)
             #     cv2.circle(image, (round(bboxes3[mm][0]), round(bboxes3[mm][1])),radius=1, color=(0, 0, 255), thickness=-1)
-            # cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/log/test.jpg',image)
+            # cv2.imwrite('<project_root>/log/test.jpg',image)
 
             # # refenece point visi
             #topk_score = np.array(paddle.max(score_head[i](output),axis=-1))
@@ -4714,9 +4714,9 @@ class TransformerDecoder_Group(nn.Layer):
             #                            radius - 2, color_g, -1)
             #
             #     for ii in range(bs):
-            #         cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-5level-m3fd/'+'mask_ir_point_'+str(i+1)+'/'+
+            #         cv2.imwrite('<project_root>/output/ms-detrv3-5level-m3fd/'+'mask_ir_point_'+str(i+1)+'/'+
             #                     gt_meta['vis_im_file'][ii].split('/')[-1].split('.')[0]+'_vis.png',vis_imgs[ii])
-            #         cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-5level-m3fd/'+'mask_ir_point_'+str(i+1)+'/'+
+            #         cv2.imwrite('<project_root>/output/ms-detrv3-5level-m3fd/'+'mask_ir_point_'+str(i+1)+'/'+
             #                     gt_meta['ir_im_file'][ii].split('/')[-1].split('.')[0]+'_ir.png',ir_imgs[ii])
 
 
@@ -4826,7 +4826,7 @@ class TransformerDecoder_Groupx3_Missing(nn.Layer):
             #     cv2.circle(image,(round(bboxes1[mm][0]),round(bboxes1[mm][1])),radius=1,color=(255,0,0),thickness=-1)
             #     cv2.circle(image, (round(bboxes2[mm][0]), round(bboxes2[mm][1])),radius=1, color=(0, 255, 0), thickness=-1)
             #     cv2.circle(image, (round(bboxes3[mm][0]), round(bboxes3[mm][1])),radius=1, color=(0, 0, 255), thickness=-1)
-            # cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/log/test.jpg',image)
+            # cv2.imwrite('<project_root>/log/test.jpg',image)
 
             # # refenece point visi
             #topk_score = np.array(paddle.max(score_head[i](output),axis=-1))
@@ -4876,9 +4876,9 @@ class TransformerDecoder_Groupx3_Missing(nn.Layer):
             #                            radius - 2, color_g, -1)
             #
             #     for ii in range(bs):
-            #         cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-5level-m3fd/'+'mask_ir_point_'+str(i+1)+'/'+
+            #         cv2.imwrite('<project_root>/output/ms-detrv3-5level-m3fd/'+'mask_ir_point_'+str(i+1)+'/'+
             #                     gt_meta['vis_im_file'][ii].split('/')[-1].split('.')[0]+'_vis.png',vis_imgs[ii])
-            #         cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-5level-m3fd/'+'mask_ir_point_'+str(i+1)+'/'+
+            #         cv2.imwrite('<project_root>/output/ms-detrv3-5level-m3fd/'+'mask_ir_point_'+str(i+1)+'/'+
             #                     gt_meta['ir_im_file'][ii].split('/')[-1].split('.')[0]+'_ir.png',ir_imgs[ii])
 
 
@@ -4985,7 +4985,7 @@ class TransformerDecoder_Groupx3_Missing_V2(nn.Layer):
             #     cv2.circle(image,(round(bboxes1[mm][0]),round(bboxes1[mm][1])),radius=1,color=(255,0,0),thickness=-1)
             #     cv2.circle(image, (round(bboxes2[mm][0]), round(bboxes2[mm][1])),radius=1, color=(0, 255, 0), thickness=-1)
             #     cv2.circle(image, (round(bboxes3[mm][0]), round(bboxes3[mm][1])),radius=1, color=(0, 0, 255), thickness=-1)
-            # cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/log/test.jpg',image)
+            # cv2.imwrite('<project_root>/log/test.jpg',image)
 
             # # refenece point visi
             #topk_score = np.array(paddle.max(score_head[i](output),axis=-1))
@@ -5035,9 +5035,9 @@ class TransformerDecoder_Groupx3_Missing_V2(nn.Layer):
             #                            radius - 2, color_g, -1)
             #
             #     for ii in range(bs):
-            #         cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-5level-m3fd/'+'mask_ir_point_'+str(i+1)+'/'+
+            #         cv2.imwrite('<project_root>/output/ms-detrv3-5level-m3fd/'+'mask_ir_point_'+str(i+1)+'/'+
             #                     gt_meta['vis_im_file'][ii].split('/')[-1].split('.')[0]+'_vis.png',vis_imgs[ii])
-            #         cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-5level-m3fd/'+'mask_ir_point_'+str(i+1)+'/'+
+            #         cv2.imwrite('<project_root>/output/ms-detrv3-5level-m3fd/'+'mask_ir_point_'+str(i+1)+'/'+
             #                     gt_meta['ir_im_file'][ii].split('/')[-1].split('.')[0]+'_ir.png',ir_imgs[ii])
 
 
@@ -5145,7 +5145,7 @@ class TransformerDecoder_Groupx3_Missing_V3(nn.Layer):
             #     cv2.circle(image,(round(bboxes1[mm][0]),round(bboxes1[mm][1])),radius=1,color=(255,0,0),thickness=-1)
             #     cv2.circle(image, (round(bboxes2[mm][0]), round(bboxes2[mm][1])),radius=1, color=(0, 255, 0), thickness=-1)
             #     cv2.circle(image, (round(bboxes3[mm][0]), round(bboxes3[mm][1])),radius=1, color=(0, 0, 255), thickness=-1)
-            # cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/log/test.jpg',image)
+            # cv2.imwrite('<project_root>/log/test.jpg',image)
 
             # # refenece point visi
             #topk_score = np.array(paddle.max(score_head[i](output),axis=-1))
@@ -5195,9 +5195,9 @@ class TransformerDecoder_Groupx3_Missing_V3(nn.Layer):
             #                            radius - 2, color_g, -1)
             #
             #     for ii in range(bs):
-            #         cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-5level-m3fd/'+'mask_ir_point_'+str(i+1)+'/'+
+            #         cv2.imwrite('<project_root>/output/ms-detrv3-5level-m3fd/'+'mask_ir_point_'+str(i+1)+'/'+
             #                     gt_meta['vis_im_file'][ii].split('/')[-1].split('.')[0]+'_vis.png',vis_imgs[ii])
-            #         cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-5level-m3fd/'+'mask_ir_point_'+str(i+1)+'/'+
+            #         cv2.imwrite('<project_root>/output/ms-detrv3-5level-m3fd/'+'mask_ir_point_'+str(i+1)+'/'+
             #                     gt_meta['ir_im_file'][ii].split('/')[-1].split('.')[0]+'_ir.png',ir_imgs[ii])
 
 
@@ -5303,7 +5303,7 @@ class TransformerDecoder_Groupx5_Missing(nn.Layer):
             #     cv2.circle(image,(round(bboxes1[mm][0]),round(bboxes1[mm][1])),radius=1,color=(255,0,0),thickness=-1)
             #     cv2.circle(image, (round(bboxes2[mm][0]), round(bboxes2[mm][1])),radius=1, color=(0, 255, 0), thickness=-1)
             #     cv2.circle(image, (round(bboxes3[mm][0]), round(bboxes3[mm][1])),radius=1, color=(0, 0, 255), thickness=-1)
-            # cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/log/test.jpg',image)
+            # cv2.imwrite('<project_root>/log/test.jpg',image)
 
             # # refenece point visi
             #topk_score = np.array(paddle.max(score_head[i](output),axis=-1))
@@ -5353,9 +5353,9 @@ class TransformerDecoder_Groupx5_Missing(nn.Layer):
             #                            radius - 2, color_g, -1)
             #
             #     for ii in range(bs):
-            #         cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-5level-m3fd/'+'mask_ir_point_'+str(i+1)+'/'+
+            #         cv2.imwrite('<project_root>/output/ms-detrv3-5level-m3fd/'+'mask_ir_point_'+str(i+1)+'/'+
             #                     gt_meta['vis_im_file'][ii].split('/')[-1].split('.')[0]+'_vis.png',vis_imgs[ii])
-            #         cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-5level-m3fd/'+'mask_ir_point_'+str(i+1)+'/'+
+            #         cv2.imwrite('<project_root>/output/ms-detrv3-5level-m3fd/'+'mask_ir_point_'+str(i+1)+'/'+
             #                     gt_meta['ir_im_file'][ii].split('/')[-1].split('.')[0]+'_ir.png',ir_imgs[ii])
 
 
@@ -5438,7 +5438,7 @@ class TransformerDecoder_Groupx4(nn.Layer):
             #     cv2.circle(image,(round(bboxes1[mm][0]),round(bboxes1[mm][1])),radius=1,color=(255,0,0),thickness=-1)
             #     cv2.circle(image, (round(bboxes2[mm][0]), round(bboxes2[mm][1])),radius=1, color=(0, 255, 0), thickness=-1)
             #     cv2.circle(image, (round(bboxes3[mm][0]), round(bboxes3[mm][1])),radius=1, color=(0, 0, 255), thickness=-1)
-            # cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/log/test.jpg',image)
+            # cv2.imwrite('<project_root>/log/test.jpg',image)
 
 
             # # refenece point visi
@@ -5498,9 +5498,9 @@ class TransformerDecoder_Groupx4(nn.Layer):
             #                                radius - 2, color_g, -1)
             #
             #     for ii in range(bs):
-            #         cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-groupx4-detrv3-newm3fd/'+'init_reference_point_level_'+str(i+1)+'/'+
+            #         cv2.imwrite('<project_root>/output/ms-groupx4-detrv3-newm3fd/'+'init_reference_point_level_'+str(i+1)+'/'+
             #                     gt_meta['vis_im_file'][ii].split('/')[-1].split('.')[0]+'_vis.png',vis_imgs[ii])
-            #         cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-groupx4-detrv3-newm3fd/'+'init_reference_point_level_'+str(i+1)+'/'+
+            #         cv2.imwrite('<project_root>/output/ms-groupx4-detrv3-newm3fd/'+'init_reference_point_level_'+str(i+1)+'/'+
             #                     gt_meta['ir_im_file'][ii].split('/')[-1].split('.')[0]+'_ir.png',ir_imgs[ii])
 
 
@@ -5609,7 +5609,7 @@ class TransformerDecoder_Groupx4_RANK(nn.Layer):
             #     cv2.circle(image,(round(bboxes1[mm][0]),round(bboxes1[mm][1])),radius=1,color=(255,0,0),thickness=-1)
             #     cv2.circle(image, (round(bboxes2[mm][0]), round(bboxes2[mm][1])),radius=1, color=(0, 255, 0), thickness=-1)
             #     cv2.circle(image, (round(bboxes3[mm][0]), round(bboxes3[mm][1])),radius=1, color=(0, 0, 255), thickness=-1)
-            # cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/log/test.jpg',image)
+            # cv2.imwrite('<project_root>/log/test.jpg',image)
 
 
             # # refenece point visi
@@ -5669,9 +5669,9 @@ class TransformerDecoder_Groupx4_RANK(nn.Layer):
             #                                radius - 2, color_g, -1)
             #
             #     for ii in range(bs):
-            #         cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-groupx4-detrv3-newm3fd/'+'init_reference_point_level_'+str(i+1)+'/'+
+            #         cv2.imwrite('<project_root>/output/ms-groupx4-detrv3-newm3fd/'+'init_reference_point_level_'+str(i+1)+'/'+
             #                     gt_meta['vis_im_file'][ii].split('/')[-1].split('.')[0]+'_vis.png',vis_imgs[ii])
-            #         cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-groupx4-detrv3-newm3fd/'+'init_reference_point_level_'+str(i+1)+'/'+
+            #         cv2.imwrite('<project_root>/output/ms-groupx4-detrv3-newm3fd/'+'init_reference_point_level_'+str(i+1)+'/'+
             #                     gt_meta['ir_im_file'][ii].split('/')[-1].split('.')[0]+'_ir.png',ir_imgs[ii])
 
             # generate rank indicates
@@ -5854,12 +5854,12 @@ class TransformerDecoder_BA(nn.Layer):
 
                 # #visual code
                 # cv2.imwrite(
-                #     '/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-BA-yx-newm3fd/bbox-attention-mask/layer'+str(i)+'/' +
+                #     '<project_root>/output/ms-detrv3-BA-yx-newm3fd/bbox-attention-mask/layer'+str(i)+'/' +
                 #     gt_meta['vis_im_file'][n].split('/')[-1].split('.')[0] + '_vis.png',
                 #     vis_imgs[n])
                 #
                 # cv2.imwrite(
-                #     '/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-BA-yx-newm3fd/bbox-attention-mask/layer' + str(
+                #     '<project_root>/output/ms-detrv3-BA-yx-newm3fd/bbox-attention-mask/layer' + str(
                 #         i) + '/' +
                 #     gt_meta['ir_im_file'][n].split('/')[-1].split('.')[0] + '_ir.png',
                 #     ir_imgs[n])
@@ -5917,7 +5917,7 @@ class TransformerDecoder_BA(nn.Layer):
 
                     #visual code
 
-                    # cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-BA-yx-newm3fd/bbox-attention-mask/layer'+str(i)+'/'+gt_meta['vis_im_file'][n].split('/')[-1].split('.')[0]+'_vis_mask'+str(xx)+'.png',
+                    # cv2.imwrite('<project_root>/output/ms-detrv3-BA-yx-newm3fd/bbox-attention-mask/layer'+str(i)+'/'+gt_meta['vis_im_file'][n].split('/')[-1].split('.')[0]+'_vis_mask'+str(xx)+'.png',
                     #             cv2.resize(np.array(mask_vis) * 255,(ww[n],hh[n])))
 
 
@@ -5937,7 +5937,7 @@ class TransformerDecoder_BA(nn.Layer):
                         #mask_ir[5:10, 7:15] = 1
 
                     # cv2.imwrite(
-                    #     '/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-BA-yx-newm3fd/bbox-attention-mask/layer' + str(
+                    #     '<project_root>/output/ms-detrv3-BA-yx-newm3fd/bbox-attention-mask/layer' + str(
                     #         i) + '/' + gt_meta['vis_im_file'][n].split('/')[-1].split('.')[0] + '_ir_mask' + str(
                     #         xx) + '.png',
                     #     cv2.resize(np.array(mask_ir) * 255, (ww[n], hh[n])))
@@ -6108,9 +6108,9 @@ class TransformerDecoder_BA(nn.Layer):
             #                            radius - 2, color_g, -1)
             #
             #     for ii in range(bs):
-            #         cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-5level-m3fd/'+'mask_ir_point_'+str(i+1)+'/'+
+            #         cv2.imwrite('<project_root>/output/ms-detrv3-5level-m3fd/'+'mask_ir_point_'+str(i+1)+'/'+
             #                     gt_meta['vis_im_file'][ii].split('/')[-1].split('.')[0]+'_vis.png',vis_imgs[ii])
-            #         cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-5level-m3fd/'+'mask_ir_point_'+str(i+1)+'/'+
+            #         cv2.imwrite('<project_root>/output/ms-detrv3-5level-m3fd/'+'mask_ir_point_'+str(i+1)+'/'+
             #                     gt_meta['ir_im_file'][ii].split('/')[-1].split('.')[0]+'_ir.png',ir_imgs[ii])
 
 
@@ -6243,9 +6243,9 @@ class TransformerDecoder_split(nn.Layer):
             #                            radius - 2, color_g, -1)
             #
             #     for ii in range(bs):
-            #         cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-5level-m3fd/'+'mask_ir_point_'+str(i+1)+'/'+
+            #         cv2.imwrite('<project_root>/output/ms-detrv3-5level-m3fd/'+'mask_ir_point_'+str(i+1)+'/'+
             #                     gt_meta['vis_im_file'][ii].split('/')[-1].split('.')[0]+'_vis.png',vis_imgs[ii])
-            #         cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-5level-m3fd/'+'mask_ir_point_'+str(i+1)+'/'+
+            #         cv2.imwrite('<project_root>/output/ms-detrv3-5level-m3fd/'+'mask_ir_point_'+str(i+1)+'/'+
             #                     gt_meta['ir_im_file'][ii].split('/')[-1].split('.')[0]+'_ir.png',ir_imgs[ii])
 
 
@@ -8641,9 +8641,9 @@ class Multi_Group_RTDETRTransformer_V3(nn.Layer):
         #
         #
         # for ii in range(bs):
-        #     cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-newm3fd-nobug/init_query_box300/'+
+        #     cv2.imwrite('<project_root>/output/ms-detrv3-newm3fd-nobug/init_query_box300/'+
         #                 gt_meta['vis_im_file'][ii].split('/')[-1].split('.')[0]+'_vis.png',vis_imgs[ii])
-        #     cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-newm3fd-nobug/init_query_box300/'+
+        #     cv2.imwrite('<project_root>/output/ms-detrv3-newm3fd-nobug/init_query_box300/'+
         #                 gt_meta['ir_im_file'][ii].split('/')[-1].split('.')[0]+'_ir.png',ir_imgs[ii])
 
 
@@ -8691,9 +8691,9 @@ class Multi_Group_RTDETRTransformer_V3(nn.Layer):
         #         #                radius - 2, color_g, -1)
         #
         # for ii in range(bs):
-        #     cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-newm3fd-nobug/init_query_refrence_point/'+
+        #     cv2.imwrite('<project_root>/output/ms-detrv3-newm3fd-nobug/init_query_refrence_point/'+
         #                 gt_meta['vis_im_file'][ii].split('/')[-1].split('.')[0]+'_vis.png',vis_imgs[ii])
-        #     cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-newm3fd-nobug/init_query_refrence_point/'+
+        #     cv2.imwrite('<project_root>/output/ms-detrv3-newm3fd-nobug/init_query_refrence_point/'+
         #                 gt_meta['ir_im_file'][ii].split('/')[-1].split('.')[0]+'_ir.png',ir_imgs[ii])
 
 
@@ -9356,9 +9356,9 @@ class Multi_Groupx3_RTDETRTransformer_V3_Missing(nn.Layer):
         #
         #
         # for ii in range(bs):
-        #     cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-newm3fd-nobug/init_query_box300/'+
+        #     cv2.imwrite('<project_root>/output/ms-detrv3-newm3fd-nobug/init_query_box300/'+
         #                 gt_meta['vis_im_file'][ii].split('/')[-1].split('.')[0]+'_vis.png',vis_imgs[ii])
-        #     cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-newm3fd-nobug/init_query_box300/'+
+        #     cv2.imwrite('<project_root>/output/ms-detrv3-newm3fd-nobug/init_query_box300/'+
         #                 gt_meta['ir_im_file'][ii].split('/')[-1].split('.')[0]+'_ir.png',ir_imgs[ii])
 
 
@@ -9406,9 +9406,9 @@ class Multi_Groupx3_RTDETRTransformer_V3_Missing(nn.Layer):
         #         #                radius - 2, color_g, -1)
         #
         # for ii in range(bs):
-        #     cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-newm3fd-nobug/init_query_refrence_point/'+
+        #     cv2.imwrite('<project_root>/output/ms-detrv3-newm3fd-nobug/init_query_refrence_point/'+
         #                 gt_meta['vis_im_file'][ii].split('/')[-1].split('.')[0]+'_vis.png',vis_imgs[ii])
-        #     cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-newm3fd-nobug/init_query_refrence_point/'+
+        #     cv2.imwrite('<project_root>/output/ms-detrv3-newm3fd-nobug/init_query_refrence_point/'+
         #                 gt_meta['ir_im_file'][ii].split('/')[-1].split('.')[0]+'_ir.png',ir_imgs[ii])
 
 
@@ -10087,9 +10087,9 @@ class Multi_Groupx3_RTDETRTransformer_Missing(nn.Layer):
         #
         #
         # for ii in range(bs):
-        #     cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-newm3fd-nobug/init_query_box300/'+
+        #     cv2.imwrite('<project_root>/output/ms-detrv3-newm3fd-nobug/init_query_box300/'+
         #                 gt_meta['vis_im_file'][ii].split('/')[-1].split('.')[0]+'_vis.png',vis_imgs[ii])
-        #     cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-newm3fd-nobug/init_query_box300/'+
+        #     cv2.imwrite('<project_root>/output/ms-detrv3-newm3fd-nobug/init_query_box300/'+
         #                 gt_meta['ir_im_file'][ii].split('/')[-1].split('.')[0]+'_ir.png',ir_imgs[ii])
 
 
@@ -10137,9 +10137,9 @@ class Multi_Groupx3_RTDETRTransformer_Missing(nn.Layer):
         #         #                radius - 2, color_g, -1)
         #
         # for ii in range(bs):
-        #     cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-newm3fd-nobug/init_query_refrence_point/'+
+        #     cv2.imwrite('<project_root>/output/ms-detrv3-newm3fd-nobug/init_query_refrence_point/'+
         #                 gt_meta['vis_im_file'][ii].split('/')[-1].split('.')[0]+'_vis.png',vis_imgs[ii])
-        #     cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-newm3fd-nobug/init_query_refrence_point/'+
+        #     cv2.imwrite('<project_root>/output/ms-detrv3-newm3fd-nobug/init_query_refrence_point/'+
         #                 gt_meta['ir_im_file'][ii].split('/')[-1].split('.')[0]+'_ir.png',ir_imgs[ii])
 
 
@@ -10846,9 +10846,9 @@ class Multi_Groupx3_RTDETRTransformer_Missing_V3(nn.Layer):
         #
         #
         # for ii in range(bs):
-        #     cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-newm3fd-nobug/init_query_box300/'+
+        #     cv2.imwrite('<project_root>/output/ms-detrv3-newm3fd-nobug/init_query_box300/'+
         #                 gt_meta['vis_im_file'][ii].split('/')[-1].split('.')[0]+'_vis.png',vis_imgs[ii])
-        #     cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-newm3fd-nobug/init_query_box300/'+
+        #     cv2.imwrite('<project_root>/output/ms-detrv3-newm3fd-nobug/init_query_box300/'+
         #                 gt_meta['ir_im_file'][ii].split('/')[-1].split('.')[0]+'_ir.png',ir_imgs[ii])
 
 
@@ -11598,9 +11598,9 @@ class Multi_Groupx5_RTDETRTransformer_V3_Missing(nn.Layer):
         #
         #
         # for ii in range(bs):
-        #     cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-newm3fd-nobug/init_query_box300/'+
+        #     cv2.imwrite('<project_root>/output/ms-detrv3-newm3fd-nobug/init_query_box300/'+
         #                 gt_meta['vis_im_file'][ii].split('/')[-1].split('.')[0]+'_vis.png',vis_imgs[ii])
-        #     cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-newm3fd-nobug/init_query_box300/'+
+        #     cv2.imwrite('<project_root>/output/ms-detrv3-newm3fd-nobug/init_query_box300/'+
         #                 gt_meta['ir_im_file'][ii].split('/')[-1].split('.')[0]+'_ir.png',ir_imgs[ii])
 
 
@@ -11648,9 +11648,9 @@ class Multi_Groupx5_RTDETRTransformer_V3_Missing(nn.Layer):
         #         #                radius - 2, color_g, -1)
         #
         # for ii in range(bs):
-        #     cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-newm3fd-nobug/init_query_refrence_point/'+
+        #     cv2.imwrite('<project_root>/output/ms-detrv3-newm3fd-nobug/init_query_refrence_point/'+
         #                 gt_meta['vis_im_file'][ii].split('/')[-1].split('.')[0]+'_vis.png',vis_imgs[ii])
-        #     cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-newm3fd-nobug/init_query_refrence_point/'+
+        #     cv2.imwrite('<project_root>/output/ms-detrv3-newm3fd-nobug/init_query_refrence_point/'+
         #                 gt_meta['ir_im_file'][ii].split('/')[-1].split('.')[0]+'_ir.png',ir_imgs[ii])
 
 
@@ -12325,9 +12325,9 @@ class Multi_Groupx4_RTDETRTransformer_V3(nn.Layer):
         #
         #
         # for ii in range(bs):
-        #     cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-newm3fd-nobug/init_query_box300/'+
+        #     cv2.imwrite('<project_root>/output/ms-detrv3-newm3fd-nobug/init_query_box300/'+
         #                 gt_meta['vis_im_file'][ii].split('/')[-1].split('.')[0]+'_vis.png',vis_imgs[ii])
-        #     cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-newm3fd-nobug/init_query_box300/'+
+        #     cv2.imwrite('<project_root>/output/ms-detrv3-newm3fd-nobug/init_query_box300/'+
         #                 gt_meta['ir_im_file'][ii].split('/')[-1].split('.')[0]+'_ir.png',ir_imgs[ii])
 
 
@@ -12391,9 +12391,9 @@ class Multi_Groupx4_RTDETRTransformer_V3(nn.Layer):
         #         #                radius - 2, color_g, -1)
         #
         # for ii in range(bs):
-        #     cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-groupx4-detrv3-newm3fd/init_reference_point_2/'+
+        #     cv2.imwrite('<project_root>/output/ms-groupx4-detrv3-newm3fd/init_reference_point_2/'+
         #                 gt_meta['vis_im_file'][ii].split('/')[-1].split('.')[0]+'_vis.png',vis_imgs[ii])
-        #     cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-groupx4-detrv3-newm3fd/init_reference_point_2/'+
+        #     cv2.imwrite('<project_root>/output/ms-groupx4-detrv3-newm3fd/init_reference_point_2/'+
         #                 gt_meta['ir_im_file'][ii].split('/')[-1].split('.')[0]+'_ir.png',ir_imgs[ii])
 
 
@@ -13097,9 +13097,9 @@ class Multi_Groupx4_RTDETRTransformer_V3_RANK(nn.Layer):
         #
         #
         # for ii in range(bs):
-        #     cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-newm3fd-nobug/init_query_box300/'+
+        #     cv2.imwrite('<project_root>/output/ms-detrv3-newm3fd-nobug/init_query_box300/'+
         #                 gt_meta['vis_im_file'][ii].split('/')[-1].split('.')[0]+'_vis.png',vis_imgs[ii])
-        #     cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-newm3fd-nobug/init_query_box300/'+
+        #     cv2.imwrite('<project_root>/output/ms-detrv3-newm3fd-nobug/init_query_box300/'+
         #                 gt_meta['ir_im_file'][ii].split('/')[-1].split('.')[0]+'_ir.png',ir_imgs[ii])
 
 
@@ -13163,9 +13163,9 @@ class Multi_Groupx4_RTDETRTransformer_V3_RANK(nn.Layer):
         #         #                radius - 2, color_g, -1)
         #
         # for ii in range(bs):
-        #     cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-groupx4-detrv3-newm3fd/init_reference_point_2/'+
+        #     cv2.imwrite('<project_root>/output/ms-groupx4-detrv3-newm3fd/init_reference_point_2/'+
         #                 gt_meta['vis_im_file'][ii].split('/')[-1].split('.')[0]+'_vis.png',vis_imgs[ii])
-        #     cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-groupx4-detrv3-newm3fd/init_reference_point_2/'+
+        #     cv2.imwrite('<project_root>/output/ms-groupx4-detrv3-newm3fd/init_reference_point_2/'+
         #                 gt_meta['ir_im_file'][ii].split('/')[-1].split('.')[0]+'_ir.png',ir_imgs[ii])
 
 
@@ -13773,9 +13773,9 @@ class Multi_RTDETRTransformer_V3(nn.Layer):
         #
         #
         # for ii in range(bs):
-        #     cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-newm3fd-nobug/init_query_box300/'+
+        #     cv2.imwrite('<project_root>/output/ms-detrv3-newm3fd-nobug/init_query_box300/'+
         #                 gt_meta['vis_im_file'][ii].split('/')[-1].split('.')[0]+'_vis.png',vis_imgs[ii])
-        #     cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-newm3fd-nobug/init_query_box300/'+
+        #     cv2.imwrite('<project_root>/output/ms-detrv3-newm3fd-nobug/init_query_box300/'+
         #                 gt_meta['ir_im_file'][ii].split('/')[-1].split('.')[0]+'_ir.png',ir_imgs[ii])
 
 
@@ -13839,9 +13839,9 @@ class Multi_RTDETRTransformer_V3(nn.Layer):
         #         #                radius - 2, color_g, -1)
         #
         # for ii in range(bs):
-        #     cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-newm3fd-nobug/init_query_reference_point_box/'+
+        #     cv2.imwrite('<project_root>/output/ms-detrv3-newm3fd-nobug/init_query_reference_point_box/'+
         #                 gt_meta['vis_im_file'][ii].split('/')[-1].split('.')[0]+'_vis.png',vis_imgs[ii])
-        #     cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-newm3fd-nobug/init_query_reference_point_box/'+
+        #     cv2.imwrite('<project_root>/output/ms-detrv3-newm3fd-nobug/init_query_reference_point_box/'+
         #                 gt_meta['ir_im_file'][ii].split('/')[-1].split('.')[0]+'_ir.png',ir_imgs[ii])
 
 
@@ -16481,9 +16481,9 @@ class Multi_RTDETRTransformer_V7(nn.Layer):
         #
         #
         # for ii in range(bs):
-        #     cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-5level-m3fd/query_bbox/'+
+        #     cv2.imwrite('<project_root>/output/ms-detrv3-5level-m3fd/query_bbox/'+
         #                 gt_meta['vis_im_file'][ii].split('/')[-1].split('.')[0]+'_vis.png',vis_imgs[ii])
-        #     cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-5level-m3fd/query_bbox/'+
+        #     cv2.imwrite('<project_root>/output/ms-detrv3-5level-m3fd/query_bbox/'+
         #                 gt_meta['ir_im_file'][ii].split('/')[-1].split('.')[0]+'_ir.png',ir_imgs[ii])
 
 
@@ -16531,9 +16531,9 @@ class Multi_RTDETRTransformer_V7(nn.Layer):
         #                        radius - 2, color_g, -1)
         #
         # for ii in range(bs):
-        #     cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-5level-m3fd/mask_ir_point_0/'+
+        #     cv2.imwrite('<project_root>/output/ms-detrv3-5level-m3fd/mask_ir_point_0/'+
         #                 gt_meta['vis_im_file'][ii].split('/')[-1].split('.')[0]+'_vis.png',vis_imgs[ii])
-        #     cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-5level-m3fd/mask_ir_point_0/'+
+        #     cv2.imwrite('<project_root>/output/ms-detrv3-5level-m3fd/mask_ir_point_0/'+
         #                 gt_meta['ir_im_file'][ii].split('/')[-1].split('.')[0]+'_ir.png',ir_imgs[ii])
 
 
@@ -17111,9 +17111,9 @@ class Multi_RTDETRTransformer_V3_BA(nn.Layer):
         #
         #
         # for ii in range(bs):
-        #     cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-5level-m3fd/query_bbox/'+
+        #     cv2.imwrite('<project_root>/output/ms-detrv3-5level-m3fd/query_bbox/'+
         #                 gt_meta['vis_im_file'][ii].split('/')[-1].split('.')[0]+'_vis.png',vis_imgs[ii])
-        #     cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-5level-m3fd/query_bbox/'+
+        #     cv2.imwrite('<project_root>/output/ms-detrv3-5level-m3fd/query_bbox/'+
         #                 gt_meta['ir_im_file'][ii].split('/')[-1].split('.')[0]+'_ir.png',ir_imgs[ii])
 
 
@@ -17161,9 +17161,9 @@ class Multi_RTDETRTransformer_V3_BA(nn.Layer):
         #                        radius - 2, color_g, -1)
         #
         # for ii in range(bs):
-        #     cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-5level-m3fd/mask_ir_point_0/'+
+        #     cv2.imwrite('<project_root>/output/ms-detrv3-5level-m3fd/mask_ir_point_0/'+
         #                 gt_meta['vis_im_file'][ii].split('/')[-1].split('.')[0]+'_vis.png',vis_imgs[ii])
-        #     cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-5level-m3fd/mask_ir_point_0/'+
+        #     cv2.imwrite('<project_root>/output/ms-detrv3-5level-m3fd/mask_ir_point_0/'+
         #                 gt_meta['ir_im_file'][ii].split('/')[-1].split('.')[0]+'_ir.png',ir_imgs[ii])
 
 
@@ -17752,9 +17752,9 @@ class Multi_RTDETRTransformer_split(nn.Layer):
         #
         #
         # for ii in range(bs):
-        #     cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-5level-m3fd/query_bbox/'+
+        #     cv2.imwrite('<project_root>/output/ms-detrv3-5level-m3fd/query_bbox/'+
         #                 gt_meta['vis_im_file'][ii].split('/')[-1].split('.')[0]+'_vis.png',vis_imgs[ii])
-        #     cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-5level-m3fd/query_bbox/'+
+        #     cv2.imwrite('<project_root>/output/ms-detrv3-5level-m3fd/query_bbox/'+
         #                 gt_meta['ir_im_file'][ii].split('/')[-1].split('.')[0]+'_ir.png',ir_imgs[ii])
 
 
@@ -17802,9 +17802,9 @@ class Multi_RTDETRTransformer_split(nn.Layer):
         #                        radius - 2, color_g, -1)
         #
         # for ii in range(bs):
-        #     cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-5level-m3fd/mask_ir_point_0/'+
+        #     cv2.imwrite('<project_root>/output/ms-detrv3-5level-m3fd/mask_ir_point_0/'+
         #                 gt_meta['vis_im_file'][ii].split('/')[-1].split('.')[0]+'_vis.png',vis_imgs[ii])
-        #     cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-5level-m3fd/mask_ir_point_0/'+
+        #     cv2.imwrite('<project_root>/output/ms-detrv3-5level-m3fd/mask_ir_point_0/'+
         #                 gt_meta['ir_im_file'][ii].split('/')[-1].split('.')[0]+'_ir.png',ir_imgs[ii])
 
 
@@ -18353,9 +18353,9 @@ class Multi_RTDETRTransformer_split(nn.Layer):
 #         #                        radius - 2, color_g, -1)
 #         #
 #         # for ii in range(bs):
-#         #     cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-5level-flir/reference_point/'+
+#         #     cv2.imwrite('<project_root>/output/ms-detrv3-5level-flir/reference_point/'+
 #         #                 gt_meta['vis_im_file'][ii].split('/')[-1].split('.')[0]+'_vis.png',vis_imgs[ii])
-#         #     cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-5level-flir/reference_point/'+
+#         #     cv2.imwrite('<project_root>/output/ms-detrv3-5level-flir/reference_point/'+
 #         #                 gt_meta['ir_im_file'][ii].split('/')[-1].split('.')[0]+'_ir.png',ir_imgs[ii])
 #
 #
@@ -18981,9 +18981,9 @@ class Multi_RTDETRTransformer_V3_RANK(nn.Layer):
         #
         #
         # for ii in range(bs):
-        #     cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-newm3fd-nobug/init_query_box300/'+
+        #     cv2.imwrite('<project_root>/output/ms-detrv3-newm3fd-nobug/init_query_box300/'+
         #                 gt_meta['vis_im_file'][ii].split('/')[-1].split('.')[0]+'_vis.png',vis_imgs[ii])
-        #     cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-newm3fd-nobug/init_query_box300/'+
+        #     cv2.imwrite('<project_root>/output/ms-detrv3-newm3fd-nobug/init_query_box300/'+
         #                 gt_meta['ir_im_file'][ii].split('/')[-1].split('.')[0]+'_ir.png',ir_imgs[ii])
 
 
@@ -19047,9 +19047,9 @@ class Multi_RTDETRTransformer_V3_RANK(nn.Layer):
         #         #                radius - 2, color_g, -1)
         #
         # for ii in range(bs):
-        #     cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-newm3fd-nobug/init_query_reference_point_box/'+
+        #     cv2.imwrite('<project_root>/output/ms-detrv3-newm3fd-nobug/init_query_reference_point_box/'+
         #                 gt_meta['vis_im_file'][ii].split('/')[-1].split('.')[0]+'_vis.png',vis_imgs[ii])
-        #     cv2.imwrite('/home/guojunjie/PycharmProjects/pp_detection/PaddleDetection-develop/output/ms-detrv3-newm3fd-nobug/init_query_reference_point_box/'+
+        #     cv2.imwrite('<project_root>/output/ms-detrv3-newm3fd-nobug/init_query_reference_point_box/'+
         #                 gt_meta['ir_im_file'][ii].split('/')[-1].split('.')[0]+'_ir.png',ir_imgs[ii])
 
 

@@ -1,0 +1,10 @@
+Train	Train/T02/CoastGuard2/000619
+Train	Train/T04/CoastGuard1/000691
+Train	Train/T01/CoastGuard1/000742
+Train	Train/T01/CoastGuard1/000772
+Valid	Valid/V01/CoastGuard1/000558
+Valid	Valid/V01/CoastGuard2/000376
+Valid	Valid/V01/CoastGuard1/000324
+Test	Test/S02/CoastGuard2/000195
+Test	Test/S03/CoastGuard2/000039
+Test	Test/S01/CoastGuard1/000302

@@ -1,0 +1,29 @@
+{
+  "description": "Sealand super4 class height priors in meters",
+  "class_order": [
+    "CargoShip",
+    "CruiseShip",
+    "FishingVessel",
+    "RecreationalBoat"
+  ],
+  "stats": {
+    "p50": {
+      "CargoShip": 31.99,
+      "CruiseShip": 69.77,
+      "FishingVessel": 24.21,
+      "RecreationalBoat": 7.56
+    },
+    "p75": {
+      "CargoShip": 46.55,
+      "CruiseShip": 69.77,
+      "FishingVessel": 34.33,
+      "RecreationalBoat": 9.18
+    },
+    "p90": {
+      "CargoShip": 46.55,
+      "CruiseShip": 69.77,
+      "FishingVessel": 34.33,
+      "RecreationalBoat": 15.05
+    }
+  }
+}
